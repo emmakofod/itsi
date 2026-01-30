@@ -10,6 +10,9 @@ remember to chmod +x file.name to make executable
 kali - visual editor is gedit and interpretor is just write python3 -> write code directly to terminal
 ctrl + l in interpretor for clean slate
 
+Built in function can be called from python like
+len(x) whereas a types own methods are called by x.append(x).
+
 ## Syntax
 
 Indentation marks blocks of code
@@ -108,6 +111,8 @@ Logical operators: [not] [or] [and]
 
 ### List
 
+x = [1, 2, etc]
+
 ikke immutable
 ordered
 can contain other types : strings, tuples, lists, dictionaries, functions, file objects and any type of number
@@ -141,7 +146,13 @@ in, +, \*
 
 ### Tuple
 
-like list but immutable
+x = (1,etc)
+
+used for data you dont want being changed ex, logs w/ ips and ports
+ex:
+x = (("192.168.0.1", 400), ("192.168.1.1", 500))
+
+like list but immutable, is ordered
 
 built in functions : len, max, min
 
@@ -150,6 +161,8 @@ methods: count, index
 operators: in, +, \*
 
 indexes and slice work the same as in lists - but cant add, replace or remove elements (immutable)
+
+to make changes you can cast to a list and do whatever you want to do, and then make a tuple from it again.
 
 ### Dictionary
 
@@ -160,10 +173,20 @@ Values can be any kind of object (also lists and dictionaries)
 
 built in functions: len, del
 
-methods: clear, copy, get, items, keys, update, values
+methods: clear, copy, get, items, keys, update, values, pop
 
-instead of old deprecated "has_keys" we use "in" operator
+x = y.copy() gives med a COPY that i can do stuff to, its its own, whereas if you y = x, when you change something in y, you also change it in x because you refer to x when you change something in y.
 
+x.update(y) - makes x be like y
+
+instead of old deprecated "has_key()" we use "in" operator -> so it only looks for keys, not values.
+
+if you try to find a key by x.["keyname"] and it doesnt exist, the program crashes - so you use get instead - x.get("keyname"), returns the value if it exists or nothing if it doesnt.
+You can x.get("keyname", "Key doesnt exist") and return the last value if th ekey doesnt exist.
+
+x.items() returns the dictionary pais in a list.
+x.values() returns a list of the values
+x.keys() returns a list of the keys
 ![dict operations](image-8.png)
 
 ### Set
