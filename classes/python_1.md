@@ -203,3 +203,154 @@ int, float, string, tuple (not list, dicts, sets)
 elif makes the conditions mutually exclusive
 
 you can use "pass" for when you dotn have code readu for something, but dotn want the program to crash.
+
+### Match case
+
+Is a switch case (in other languages)
+
+```
+Command = 'HTTP/1.1'
+match command:
+case 'HTTP/0.9':
+print('You need to upgrade your browser, we do not support version 0.9')
+exit()
+case 'HTTP/1.0':
+print('You are running version 1.0 therefore non-presistent')
+case 'HTTP/1.1':
+print('You are running version 1.1 therefore presistent')
+case other:
+print('You are not providing a right HTTP version')
+```
+
+### While
+
+```
+a=5
+while a>3:
+    print(a)
+    a=1 # same as a = a-1
+```
+
+Can contain break (ends the loop) and continue statements (aborts only the current
+iteration of the loop)
+
+
+#### Break vs continue statements
+
+```
+i = 5
+while i>1:
+    i -= 1
+    if i == 3:
+        break
+    print("Value of i is now ", i)
+print("Value of i is ", i
+```
+### For loop
+
+Can be done on all Collection types in python
+
+```
+x = ["a". "b", "c"]
+
+d = { "name": "emma", "age" : 27}
+
+l = list(range(0,101))
+
+
+for i in x(/d/l/etc):
+    print(i)
+
+```
+
+loop on dict - prints the key
+
+for the values, use other methods in loop
+```
+for i in d.values():
+    print(i)
+
+```
+
+for i in range(0, -10, -1) - reverse stepper
+
+range(x, y) is not a list, it is an object
+
+```
+s = "Emma"
+
+for i in s:
+    print(i)
+```
+will return the first letter, the length of the string is the range.
+
+```
+for i in s[-4::]:
+    print(i)
+```
+
+we can use other methods there too
+
+
+#### tuple unpacking (out of scope for now)
+
+for i, j in d.items():
+    print(f"key is {i} and value is {j}")
+
+x = ["a", "b", "c"]
+
+d = {"name": "emma", "age": 27}
+
+s = "emma"
+
+for index, item in enumerate(x):
+    for i in d.value():
+        print(i)
+
+enumerate() return the item you look at and the index
+
+### Files reading and writing
+
+r - read
+w - write
+a - write, appending to the end of any data already in the file
+
+#### Reading
+```
+file_object = open('myfile', 'r') # open myfile in read mode
+
+line = file_object.readline() # reads the first line
+
+print(line)
+for line in file_object:
+    print(line)
+file_object.close() # frees up system resources
+```
+
+This obtain the same result:
+
+```
+file_object = open('myfile'.txt', 'r') # open myfile in read mode
+lines = file_object.readlines() # reads all lines
+for line in lines:
+    item = item.strip() # to remove the leading and trailing spaces
+    print(line)
+file_object.close() # frees up system resourcess
+```
+
+#### Writing
+
+"w" write mode overwrites, "a" append mode just adds to the end. 
+
+You can be in write mode and write all you need as long as you ar eint he cntext manager.
+
+if you use a context manager, you dont need to worry about closing your file.
+
+If you "open" a file that doesnt exist, it creates a new file.
+
+```
+x = "Emma"
+with open("file.txt", "w") as file:
+    file.write(x + "\n") # if you add a new line, it doesnt overwrite
+```
+
