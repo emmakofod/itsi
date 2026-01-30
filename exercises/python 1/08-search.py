@@ -12,7 +12,7 @@ Line 7 [found keyword] “03/22 08:51:06 WARNING:.....mailslot_create: setsockop
 
 file = open("./logs_08.txt", "r")
 
-searchword = str(input("Input your searhc word: "))
+searchword = str(input("Input your search word: "))
 
 
 for index, line in enumerate(file, start=1):
