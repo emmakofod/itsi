@@ -199,3 +199,7 @@ int, float, string, tuple (not list, dicts, sets)
 ## Control flow and structures
 
 ### If, elif, else
+
+elif makes the conditions mutually exclusive
+
+you can use "pass" for when you dotn have code readu for something, but dotn want the program to crash.
