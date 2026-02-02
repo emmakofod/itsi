@@ -248,7 +248,7 @@ print("Value of i is ", i
 ```
 ### For loop
 
-Can be done on all Collection types in python
+Can be done on all Collection types in python + strings
 
 ```
 x = ["a". "b", "c"]
