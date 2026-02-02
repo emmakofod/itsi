@@ -18,26 +18,40 @@ and outputs the corresponding encrypted message.
 '''
 
 
-def caesar_cipher(input_value, shift, encrypt= False, decrypt= False):
+def caesar_cipher(input_value, shift = 3, encrypt= False, decrypt= False):
+    if shift == "":
+        shift = "3"
     if encrypt:
-        shift = shift
+        shift = int(shift)
     elif decrypt:
-        shift = -shift
+        shift = -int(shift)
     
     cipher = ""
 
     for x in input_value:
-        x = ord(x) + shift
-        cipher = cipher + chr(x)
+        if x.isalpha():
+            if x.isupper():
+                base = ord('A')
+            else:
+                base = ord('a')
+            
+            # shifting:
+            position = ord(x) - base
+            shifted_position = (position + shift) % 26
 
-    
+            new_char = chr(shifted_position + base)
+            cipher = cipher + new_char
+        else:
+            # non-alphabetic = unchanged
+            cipher = cipher + x
+
     return cipher
 
 
 input_value = input("write a something you want encrypted: ")
 shift = input("specify the shift (an int) if you want something other default shift: ")
 
-encryption = caesar_cipher(input_value, shift=3, encrypt=True)
+encryption = caesar_cipher(input_value, shift, encrypt=True)
 print("Your message is now encrypted: ", encryption)
-decryption = caesar_cipher(encryption, shift=3, decrypt = True)
+decryption = caesar_cipher(encryption, shift, decrypt = True)
 print("The decryped message is: ", decryption)
