@@ -498,3 +498,15 @@ faster, lightweight. DNS uses UDP, or live stuff ex live broadcast - needs to be
 
 
 ![udp segment](image-16.png)
+
+
+
+
+
+Mandatory assignment part 1 is individual - at leats 30, upload code to fronter - allowed to do toether, but hand in alone.
+python files to dl and import them and do the exercises one at a time.
+look at slides - all explained in tutorial.
+
+Mandatory part 2 is group - 
+xcel file on teams to make groups (check tcp server and make it to a web server instead) - no libraries, regex is okay and stuff.
+task description file is on fronter in resources / mandatory.
