@@ -31,7 +31,7 @@ def print_info(name, age, height=0):
     print("Height", height)
     return "hej"
 
-print_info("Alice", height=150, age=10) # Keyword arguments can be used in whatever order you want to - need to be after all possitional arguments
+print_info("Alice", height=150, age=10) # Keyword arguments can be used in whatever order you want to - need to be after all positional arguments
 
 y=print_info("alice", height=50, 2)
 
@@ -98,4 +98,14 @@ You can also print an error message by
 except eException as e:
     print({e})
 
+There is an optional keyword for exception handling : finally 
+
+```
+try:
+    print(x)
+except:
+    print("Something went wrong")
+finally:
+    print("This handling always happen")
+```
 
