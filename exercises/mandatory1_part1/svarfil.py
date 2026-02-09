@@ -68,3 +68,77 @@ def answer12(data):
         if addr == "192.168.1.212":
             return cons
 
+def answer13(data):
+    """Question 13: The answer is the total sum of all the numbers in the list"""
+    return sum(data)
+
+def answer14(data):
+    """Question 14: Return a list containing tuples with names and phonenumbers [(\"name1\",\"phone1\"),(\"name2\",\"phone2\")...]"""
+    result = []
+    for pair in data.split(","):
+        (name, number) = pair.split(":")
+        result.append((name, number))
+    return result
+
+def answer15(data):
+    """Question 15: Return the dictionary with the entry for \"192.168.1.243\" removed"""
+    data.pop("192.168.1.243")
+    return data
+
+def answer16(data):
+    """Question 16: The answer is the sentence where each word is in reverese (the words keep their place in the sentence)"""
+    return ' '.join([word[::-1] for word in data.split()])
+
+def answer17(data):
+    """Question 17: return a list containing 10 tuples of the ones found in data"""
+    return [data] * 10
+
+def answer18(data):
+    """Question 18: Add a new item to the dictionary with the key \"yellow\" and the value 22"""
+    data["yellow"] = 22
+    return data
+
+def answer19(data):
+    """Question 19: return a set containing all unique ip addresses in data"""
+    return {line.split()[0] for line in data.split("\n") if line.strip()}
+
+def answer20(data):
+    """Question 20: return a dictionary containing all status codes (in string)  as key, and how many times their occured (in int) as value"""
+    status_counts = {}
+    for line in data.split("\n"):
+        parts = line.split()
+        if len(parts) > 8:
+            status = parts[8]
+            status_counts[status] = status_counts.get(status, 0) + 1
+    return status_counts
+
+def answer21(data):
+    """Question 21: return the average size (in int) of all responses with status 200 """
+    sizes = []
+    for line in data.split("\n"):
+        if line.strip():
+            parts = line.split()
+            if len(parts) > 9 and parts(8) == "200":
+                size = parts(9)
+                if size == "-":
+                    break
+                else:
+                    sizes.append(int(size))
+
+    return sum(sizes) // len(sizes)  # // for integer division
+
+def answer22(data):
+    """Question 22: return the number of times (in int) an images of the type png is in the response"""
+    count = 0
+    for line in data.split("\n"):
+        if line.strip():
+            parts = line.split()
+            for part in parts:
+                if ".png" in part.casefold():
+                    count += 1
+    return count
+
+## can also just be .. if you stop overthinking everything
+def answer22_v2(data):
+    return data.lower().count(".png")
+
