@@ -376,6 +376,706 @@ The pcap files mentioned in the slides (SACK files) show real examples of SACK i
 
 ---
 
+## Real-World Example: ACK vs SACK in Action
+
+### Understanding the Difference: A Practical Capture Analysis
+
+Let's look at a **real packet capture** showing exactly how SACK works when packets are lost. This example comes from `SACK_example_.pcapng`.
+
+### The Scenario: Packet Loss Detected
+
+**What Happened:**
+Server is sending data to client in 7-byte chunks. Everything is fine until... packets get lost!
+
+### Frame-by-Frame Analysis
+
+#### **Normal Operation (Before Packet Loss):**
+
+```
+Frame 18: Server → Client
+  Seq: 50, Len: 7 bytes
+  Data: Bytes 50-57
+
+Frame 19: Client → Server
+  ACK: 57 ← "I received up to byte 56, send me byte 57 next"
+
+✅ Everything working normally!
+```
+
+#### **💥 Packet Loss Occurs:**
+
+```
+Frame 20: Server → Client
+  Seq: 85, Len: 7 bytes  ← WAIT! What happened to bytes 57-84?
+  Data: Bytes 85-92
+
+🔴 PACKETS WITH SEQ 57-84 WERE LOST! (28 bytes missing)
+```
+
+The server sent packets with sequence numbers 57-84, but they **never arrived** at the client. The client only received the packet starting at byte 85.
+
+---
+
+### 🔑 Here's Where SACK Shines!
+
+#### **Frame 21: Client's Response WITH SACK**
+
+```
+Client → Server:
+  ACK Number: 57  ← "I'm STILL waiting for byte 57" (cumulative ACK)
+
+  BUT ALSO includes in TCP Options:
+  SACK: Left Edge = 85, Right Edge = 92 ← "BUT I have bytes 85-92!"
+
+  Header Length: 32 bytes (8 d-words)
+  ↳ Extra 12 bytes for SACK option
+```
+
+**What the client is saying:**
+
+> "Hey server! I'm officially waiting for byte 57 (my ACK says 57), BUT before you retransmit EVERYTHING, you should know I already successfully received bytes 85-92. So you only need to send me bytes 57-84. Don't waste bandwidth re-sending 85-92!"
+
+**SACK Option Structure:**
+
+```
+TCP Options: (12 bytes)
+  - NOP (1 byte) - padding
+  - NOP (1 byte) - padding
+  - SACK (10 bytes):
+      Kind: 5 (SACK)
+      Length: 10
+      Left Edge: 85  (relative sequence number)
+      Right Edge: 92 (relative sequence number)
+```
+
+---
+
+### 📊 Comparison: With SACK vs Without SACK
+
+#### **WITHOUT SACK (Traditional TCP/Go-Back-N):**
+
+```
+Server receives: ACK 57
+
+Server thinks:
+"Client wants byte 57. I have no idea if the client
+got any packets after that. Better retransmit EVERYTHING
+from byte 57 onwards."
+
+Server retransmits:
+  - Bytes 57-64  ← Needed
+  - Bytes 65-72  ← Needed
+  - Bytes 73-84  ← Needed
+  - Bytes 85-92  ← WASTED! Client already has these!
+
+Total retransmission: 35 bytes (including duplicates)
+```
+
+#### **WITH SACK (What Actually Happened):**
+
+```
+Server receives: ACK 57 + SACK(85-92)
+
+Server thinks:
+"Client wants byte 57 AND has told me it already
+has bytes 85-92. I only need to retransmit 57-84!"
+
+Server retransmits (Frame 22):
+  - Bytes 57-84 only ← Exactly what's missing!
+
+Total retransmission: 28 bytes (no waste!)
+```
+
+**Bandwidth Saved:** 7 bytes (20% reduction in this small example, much more in real scenarios!)
+
+---
+
+### Frame 22: Server's Smart Retransmission
+
+```
+Frame 22: Server → Client (Retransmission)
+  Seq: 57, Len: 28 bytes
+  Data: Bytes 57-84  ← Only the missing data!
+
+  TCP Analysis Flags:
+    ✓ "This frame is a (suspected) retransmission"
+    ✓ "RTO for this segment was: 1.536 seconds"
+```
+
+The server **selectively retransmits** only bytes 57-84 because SACK told it that bytes 85-92 were already received!
+
+---
+
+### Frame 23: Client Confirms Receipt
+
+```
+Frame 23: Client → Server
+  ACK: 92 ← "Perfect! I now have everything up to byte 92"
+
+  No SACK needed anymore - all data received in order!
+```
+
+---
+
+### Visual Representation of What Happened
+
+```
+Server's Data Stream:
+┌────┬────┬────┬────┬────┬────┬────┬────┬────┬────┐
+│... │ 50 │ 57 │ 64 │ 71 │ 78 │ 85 │ 92 │ 99 │...│
+└────┴────┴────┴────┴────┴────┴────┴────┴────┴────┘
+       ✓    ❌   ❌   ❌   ❌    ✓
+
+Legend:
+✓ = Received by client
+❌ = Lost in transmission
+
+Client's Perspective:
+"I have: ...up to 56, then 85-92"
+"I need: 57-84"
+```
+
+---
+
+### TCP Header Comparison: Regular ACK vs SACK
+
+#### **Regular ACK (Frame 19):**
+
+```
+TCP Header: 20 bytes (5 d-words)
+┌──────────────┬──────────────┐
+│ Source Port  │  Dest Port   │
+├──────────────┴──────────────┤
+│     Sequence Number          │
+├──────────────────────────────┤
+│  Acknowledgment Number: 57   │ ← Only this tells server what we need
+├──────────────────────────────┤
+│ Hdr Len │ Flags │  Window    │
+├──────────────┬──────────────┤
+│   Checksum   │    Urgent    │
+├──────────────┴──────────────┤
+│       (No Options)           │
+└──────────────────────────────┘
+```
+
+#### **ACK with SACK (Frame 21):**
+
+```
+TCP Header: 32 bytes (8 d-words)
+┌──────────────┬──────────────┐
+│ Source Port  │  Dest Port   │
+├──────────────┴──────────────┤
+│     Sequence Number          │
+├──────────────────────────────┤
+│  Acknowledgment Number: 57   │ ← "I need byte 57"
+├──────────────────────────────┤
+│ Hdr Len │ Flags │  Window    │
+├──────────────┬──────────────┤
+│   Checksum   │    Urgent    │
+├──────────────┴──────────────┤
+│         Options:             │
+│  NOP │ NOP │ SACK (10 bytes)│
+│  Left Edge:  85              │ ← "BUT I also have 85-92!"
+│  Right Edge: 92              │
+└──────────────────────────────┘
+```
+
+---
+
+### Key Observations from This Capture
+
+1. **Cumulative ACK (57) tells what's missing**
+   - "I need byte 57 next"
+   - Everything before 57 was received successfully
+
+2. **SACK (85-92) tells what was received out-of-order**
+   - "I also have bytes 85-92 even though I'm missing 57-84"
+   - Prevents unnecessary retransmission
+
+3. **Header grows from 20 to 32 bytes**
+   - Regular ACK: 20 bytes (minimum)
+   - ACK with SACK: 32 bytes (+12 bytes for SACK option)
+   - Small overhead for big efficiency gain!
+
+4. **Multiple SACK blocks possible**
+   - This example had 1 SACK block (85-92)
+   - Can have up to 3-4 SACK blocks in one packet
+   - Each block: 8 bytes (left edge + right edge)
+
+---
+
+### How to Spot SACK in Wireshark
+
+**Filters to Use:**
+
+```
+tcp.options.sack_le          ← Shows SACK left edge
+tcp.options.sack_re          ← Shows SACK right edge
+tcp.analysis.retransmission  ← Shows retransmitted packets
+tcp.analysis.duplicate_ack   ← Shows duplicate ACKs (often with SACK)
+```
+
+**What to Look For:**
+
+1. **TCP Options** section in packet details
+2. Header length > 20 bytes (usually 32 bytes with SACK)
+3. "SACK" option with left/right edge values
+4. Sequence numbers that don't match the ACK number
+
+---
+
+### Real-World Benefits of SACK
+
+**Example:** Downloading a 1 MB file over a lossy network
+
+**Scenario:** 10 packets lost out of 1,000 packets sent
+
+**Without SACK (Go-Back-N):**
+
+- Retransmit the 10 lost packets
+- PLUS retransmit ~100 packets that came after each loss
+- Total retransmissions: ~110 packets
+
+**With SACK (Selective Repeat):**
+
+- Retransmit ONLY the 10 lost packets
+- Total retransmissions: 10 packets
+
+**Result:** 11x more efficient! (110 vs 10 packets)
+
+---
+
+### Common SACK Scenarios in Real Networks
+
+#### **Scenario 1: Single Packet Loss**
+
+```
+Sent:     1  2  X  4  5  6
+Received: 1  2     4  5  6
+
+ACK: 3, SACK(4-7)
+Retransmit: packet 3 only
+```
+
+#### **Scenario 2: Multiple Non-Contiguous Losses**
+
+```
+Sent:     1  2  X  4  X  6  7  8
+Received: 1  2     4     6  7  8
+
+ACK: 3, SACK(4-5, 6-9)
+         └─┬─┘  └─┬─┘
+      First   Second
+      block    block
+
+Retransmit: packets 3 and 5 only
+```
+
+#### **Scenario 3: Burst Loss**
+
+```
+Sent:     1  2  X  X  X  6  7  8
+Received: 1  2           6  7  8
+
+ACK: 3, SACK(6-9)
+Retransmit: packets 3, 4, 5
+```
+
+---
+
+### Study Tips for Understanding SACK
+
+1. **Remember the Two Parts:**
+   - **ACK number** = "I need this sequence number next" (cumulative)
+   - **SACK blocks** = "But I also already have these ranges" (selective)
+
+2. **SACK is Always Optional:**
+   - Must be negotiated during handshake (SYN/SYN-ACK)
+   - Both sides must support it
+   - Not all TCP implementations use it
+
+3. **SACK Doesn't Replace ACK:**
+   - SACK **supplements** the regular ACK
+   - ACK number still indicates the "edge" of received data
+   - SACK fills in the "holes" beyond that edge
+
+4. **Look for the Pattern:**
+   - Duplicate ACK with same ACK number
+   - But packet has SACK option
+   - Followed by selective retransmission
+
+---
+
+### Practice Questions
+
+1. **If ACK=100 and SACK(150-200, 250-300), what bytes are missing?**
+   - Answer: Bytes 100-149 and 200-249
+
+2. **Why does the TCP header grow when SACK is used?**
+   - Answer: SACK is an optional field added to the options section
+
+3. **Can you have SACK without packet loss?**
+   - Answer: No, SACK only appears when there's out-of-order delivery
+
+4. **What's the maximum number of SACK blocks in one packet?**
+   - Answer: Typically 3-4 blocks (limited by TCP options space of 40 bytes)
+
+---
+
+## Understanding SACK: Left Edge and Right Edge Explained
+
+### What are Left Edge and Right Edge?
+
+When TCP uses SACK (Selective Acknowledgment), it tells the sender about **ranges of data** that have been successfully received out-of-order. Each range is defined by two boundaries:
+
+**Left Edge** = The starting sequence number of received data  
+**Right Edge** = The ending sequence number of received data (first byte NOT received after this block)
+
+Think of it like highlighting text in a document:
+
+- **Left Edge**: Where you START highlighting
+- **Right Edge**: Where you STOP highlighting
+
+### Example from Real Capture (SACK*example*.pcapng):
+
+```
+SACK Option: Left Edge = 85, Right Edge = 92
+
+What this means:
+├─────────────────────────────────────────────┤
+│   Missing    │    Received    │   Unknown  │
+├─────────────────────────────────────────────┤
+   (before 85)      85-91         (after 92)
+                     ↑             ↑
+                  Left Edge    Right Edge
+```
+
+**Translation:** "I have successfully received bytes 85, 86, 87, 88, 89, 90, and 91"
+
+**Important:** The right edge (92) is **NOT included** - it's the first byte AFTER the block.
+
+**Formula:**
+
+```
+Bytes in SACK block = Right Edge - Left Edge
+Example: 92 - 85 = 7 bytes received in this block
+```
+
+### Why Two Values (Left & Right)?
+
+Because we need to specify a **range**, not just a single byte:
+
+```
+Single byte received (byte 85):
+  Left Edge = 85
+  Right Edge = 86  (one byte range: just byte 85)
+
+Multiple bytes received (bytes 85-91):
+  Left Edge = 85
+  Right Edge = 92  (seven byte range: 85,86,87,88,89,90,91)
+```
+
+### Multiple SACK Blocks Example:
+
+```
+ACK: 100
+SACK Block 1: Left Edge = 150, Right Edge = 200
+SACK Block 2: Left Edge = 250, Right Edge = 300
+
+Visual representation:
+0────100───────150──200───────250──300─────→
+     ↑          ↑────┤          ↑────┤
+   Need this   Have this      Have this
+   (and 101+)  (150-199)      (250-299)
+
+Missing bytes:
+- 100-149 (50 bytes)
+- 200-249 (50 bytes)
+
+Total missing: 100 bytes
+```
+
+---
+
+## 🔬 CRITICAL COMPARISON: SACK Enabled vs SACK Disabled
+
+Let's compare **two real captures** showing the SAME type of packet loss scenario:
+
+1. **SACK*example*.pcapng** - SACK enabled and working
+2. **SACK_disabled.pcapng** - SACK disabled/refused
+
+### SACK Negotiation During Handshake
+
+SACK must be **negotiated** during the TCP handshake. BOTH sides must agree!
+
+#### **SACK*example*.pcapng (SACK Works):**
+
+```
+Frame 1: Client → Server [SYN]
+  TCP Options: MSS=1460, SACK permitted ✓
+  Client: "I support SACK, do you?"
+
+Frame 2: Server → Client [SYN-ACK]
+  TCP Options: MSS=1460, SACK permitted ✓
+  Server: "Yes! I support SACK too!"
+
+Frame 3: Client → Server [ACK]
+  Connection established with SACK enabled
+
+✅ BOTH sides agreed to use SACK!
+```
+
+#### **SACK_disabled.pcapng (SACK Refused):**
+
+```
+Frame 1: Client → Server [SYN]
+  TCP Options: MSS=1460, SACK permitted ✓
+  Client: "I support SACK, do you?"
+
+Frame 2: Client → Server [SYN retransmit]
+  TCP Options: MSS=1460, SACK permitted ✓
+  Client: "Hey, I support SACK..."
+
+Frame 3: Server → Client [SYN-ACK]
+  TCP Options: MSS=1460, NO SACK ❌
+  Server: "Sorry, I don't support SACK"
+  ⚠️ Wireshark: "The SYN packet does not contain a SACK PERM option"
+
+Frame 4: Client → Server [ACK]
+  Connection established WITHOUT SACK
+
+❌ Server REFUSED SACK - falling back to regular ACK only!
+```
+
+**Key Point:** Even if the client wants SACK, if the server doesn't include "SACK permitted" in its SYN-ACK, SACK cannot be used for the entire connection!
+
+---
+
+### The Results: Dramatic Difference!
+
+| Metric                      | WITH SACK                       | WITHOUT SACK             |
+| --------------------------- | ------------------------------- | ------------------------ |
+| **Total Packets**           | 39                              | 26                       |
+| **Total Retransmissions**   | **1** ✓                         | **5** ❌                 |
+| **Retransmission Strategy** | Selective (smart)               | Timeout-based (blind)    |
+| **Recovery Time**           | Fast (~2 seconds)               | Slow (multiple timeouts) |
+| **Bandwidth Waste**         | Minimal                         | Significant              |
+| **Server Knowledge**        | ✅ Knows exactly what's missing | ❌ No idea what arrived  |
+
+### Visual Timeline Comparison
+
+#### WITH SACK (Efficient):
+
+```
+SACK_example_.pcapng
+
+Retransmissions: 1
+Frame 22: Selective retransmission of missing data only
+
+Time →
+0────────20────────40────────60────────70
+│    Data Flow     │ Loss │SACK│Fix│Done│
+│   (normal)       │      │Tell│ 1 │    │
+└──────────────────┴──────┴────┴───┴────┘
+                   ↑          ↑
+                Problem   Quick Fix
+```
+
+#### WITHOUT SACK (Inefficient):
+
+```
+SACK_disabled.pcapng
+
+Retransmissions: 5
+Frames 2, 14, 17, 18, 20: Multiple retransmission attempts
+
+Time →
+0───10───20───30───40───50───60───70
+│Data│TO│Retry│TO│Retry│TO│Retry│Done│
+│    │  │  1  │  │  2  │  │  3  │    │
+└────┴──┴─────┴──┴─────┴──┴─────┴────┘
+     ↑        ↑        ↑
+  Problem  Retry 1  Retry 2  Retry 3...
+
+TO = Timeout (1-3 seconds each)
+```
+
+**Result:** SACK version completes faster with fewer retransmissions!
+
+---
+
+### Why Such a Difference?
+
+#### **WITH SACK (Frame 21 in SACK*example*.pcapng):**
+
+```
+Client → Server:
+  ACK: 57  ← "I need byte 57"
+  SACK: Left Edge = 85, Right Edge = 92  ← "BUT I have 85-92!"
+
+Server thinks:
+  "Ah! They need 57-84, but they already have 85-92.
+   I'll ONLY retransmit 57-84. No waste!"
+
+Result: 1 smart retransmission
+```
+
+#### **WITHOUT SACK (Frames 13-20 in SACK_disabled.pcapng):**
+
+```
+Frame 13: Client sends seq 7
+Frame 14: Retransmit seq 7 (no response, timeout)
+Frame 15: Server finally ACKs 9
+
+Frame 16: Client sends seq 9
+Frame 17: Retransmit seq 9 (timeout)
+Frame 18: Retransmit seq 9 AGAIN (timeout again!)
+Frame 19: Server ACKs 13
+Frame 20: Server retransmits seq 9 (just in case)
+
+Server thinks:
+  "I have no idea what they received. Better keep trying
+   everything until I get an ACK..."
+
+Result: 5 blind retransmissions + wasted time
+```
+
+---
+
+### SACK Option Structure in Detail
+
+When you see SACK in a packet, here's the actual TCP option structure:
+
+```
+TCP Options Field (in Frame 21):
+┌────────────────────────────────────────────────┐
+│ NOP (1 byte) - padding for alignment          │
+├────────────────────────────────────────────────┤
+│ NOP (1 byte) - padding for alignment          │
+├────────────────────────────────────────────────┤
+│ Kind: 5 (1 byte) ← This identifies SACK       │
+├────────────────────────────────────────────────┤
+│ Length: 10 (1 byte) ← 2 + 4 + 4 = 10 bytes    │
+├────────────────────────────────────────────────┤
+│ Left Edge: 85 (4 bytes) ← Start sequence #    │
+├────────────────────────────────────────────────┤
+│ Right Edge: 92 (4 bytes) ← End sequence #     │
+└────────────────────────────────────────────────┘
+
+Total: 12 bytes (2 NOP + 10 SACK)
+Header grows from 20 bytes to 32 bytes
+```
+
+**Multiple Blocks Example:**
+
+```
+Kind: 5
+Length: 26  ← (2 header + 8×3 blocks = 26 bytes for 3 blocks)
+
+Block 1: Left=100, Right=150  (8 bytes)
+Block 2: Left=200, Right=250  (8 bytes)
+Block 3: Left=300, Right=350  (8 bytes)
+
+Each block = 4 bytes (left) + 4 bytes (right) = 8 bytes
+Maximum ~3-4 blocks per packet (TCP options limited to 40 bytes)
+```
+
+---
+
+### How to Verify SACK in Wireshark
+
+#### **Check During Handshake:**
+
+```
+Filter: tcp.flags.syn == 1
+
+Look at SYN and SYN-ACK packets:
+1. Expand: Transmission Control Protocol → Options
+2. Look for: "TCP Option - SACK permitted"
+
+   ✅ Present in BOTH SYN and SYN-ACK = SACK enabled
+   ❌ Missing in SYN-ACK = SACK disabled for connection
+```
+
+#### **Check During Data Transfer:**
+
+```
+Filter: tcp.options.sack_le
+
+If packets appear → SACK is being used actively
+If empty → SACK not negotiated or no packet loss yet
+
+Look for:
+- "TCP Option - SACK"
+- "left edge = X"
+- "right edge = Y"
+```
+
+#### **Compare Retransmission Patterns:**
+
+```
+Filter: tcp.analysis.retransmission
+
+Count retransmissions:
+- WITH SACK: Few, targeted (usually 1-2 per lost packet)
+- WITHOUT SACK: Many, repeated (3-5+ per lost packet)
+```
+
+---
+
+### Real-World Impact
+
+**Scenario:** 10 MB file transfer over WiFi with 2% packet loss
+
+**With SACK:**
+
+```
+Packets lost: ~200
+Retransmissions: ~200 (one per loss)
+Extra time: ~2 seconds
+Total time: ~10 seconds
+Efficiency: 95%
+```
+
+**Without SACK:**
+
+```
+Packets lost: ~200
+Retransmissions: ~600-800 (multiple attempts)
+Extra time: ~15-20 seconds (timeouts)
+Total time: ~25-30 seconds
+Efficiency: 40%
+```
+
+**Result:** SACK is **2.5-3x faster** on lossy networks!
+
+---
+
+### Practice Exercise: Decode This SACK
+
+```
+You see in Wireshark:
+ACK Number: 5000
+SACK Block 1: Left Edge = 6000, Right Edge = 6500
+SACK Block 2: Left Edge = 7000, Right Edge = 7200
+
+Questions:
+1. What bytes does the receiver need?
+2. What bytes does the receiver already have?
+3. How many bytes are missing total?
+4. How many SACK blocks are present?
+5. What should the sender retransmit?
+
+Answers:
+1. Receiver needs: 5000-5999 and 6500-6999
+2. Receiver already has: 6000-6499 (500 bytes) and 7000-7199 (200 bytes)
+3. Missing: 1500 bytes total (1000 + 500)
+4. SACK blocks: 2
+5. Sender should retransmit: bytes 5000-5999 and 6500-6999 only
+```
+
+---
+
 ### Data Size Units (for reference)
 
 - **1 bit** → can store a binary value (0 or 1)
@@ -579,3 +1279,46 @@ checksum: 0 1 0 0 0 1 0 0 0 1 0 0 0 0 1 1
 3. **Practice scenarios**: Work through what happens when packets are lost
 4. **Understand the "why"**: Know why certain design choices were made (e.g., why UDP for DNS)
 5. **Real-world examples**: Think about which protocol different apps use and why
+6. **Analyze the SACK pcap file**: Open `SACK_example_.pcapng` in Wireshark and follow along with the notes
+   - Look at Frame 21 to see SACK in action
+   - Compare Frame 19 (regular ACK) with Frame 21 (ACK + SACK)
+   - Notice how Frame 22 only retransmits the missing data
+   - Use filter: `tcp.options.sack_le` to highlight SACK packets
+7. **Understand sequence numbers**: Practice calculating what ACK number should be based on sequence numbers and data length
+
+---
+
+## Quick Reference: ACK vs SACK
+
+| Feature                     | Regular ACK                          | SACK (Selective ACK)                     |
+| --------------------------- | ------------------------------------ | ---------------------------------------- |
+| **What it indicates**       | Next byte expected (cumulative)      | Specific ranges already received         |
+| **Header size**             | 20 bytes (minimum)                   | 32+ bytes (includes options)             |
+| **When used**               | Every TCP packet                     | Only when out-of-order packets received  |
+| **Information provided**    | "I need byte X next"                 | "I need byte X, BUT I have bytes Y-Z"    |
+| **Retransmission behavior** | May retransmit already-received data | Only retransmits what's actually missing |
+| **Efficiency**              | Lower (Go-Back-N style)              | Higher (Selective Repeat style)          |
+| **Negotiated**              | No (always present)                  | Yes (during handshake)                   |
+| **TCP Option Kind**         | N/A                                  | Kind = 5                                 |
+| **Example**                 | ACK=100                              | ACK=100, SACK(150-200)                   |
+| **Wireshark filter**        | `tcp.ack`                            | `tcp.options.sack_le`                    |
+
+### Quick Formulas:
+
+```
+ACK Number = Last Received Seq + Data Length
+Next Expected Byte = ACK Number
+Bytes Missing = (SACK Left Edge) - (ACK Number)
+
+Example:
+Received: Seq=50, Len=7
+ACK = 50 + 7 = 57 (expecting byte 57 next)
+
+If next packet is Seq=85:
+Missing bytes = 85 - 57 = 28 bytes (seq 57-84)
+SACK would indicate: SACK(85-92)
+```
+
+---
+
+_End of Transport Layer Notes_
