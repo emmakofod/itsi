@@ -374,6 +374,8 @@ python -c "print('x'*1000)" | nc -u 192.168.234.254 53
 
 ### IPv6 Datagram Format
 
+![ipv6 datagram format](image-20.png)
+
 **Fixed-length 40-byte header** (vs. variable in IPv4)
 
 **Key differences from IPv4:**
