@@ -119,7 +119,7 @@ def answer21(data):
         if line.strip():
             parts = line.split()
             if len(parts) > 9 and parts(8) == "200":
-                size = parts(9)
+                size = parts[9]
                 if size == "-":
                     break
                 else:
@@ -142,3 +142,148 @@ def answer22(data):
 def answer22_v2(data):
     return data.lower().count(".png")
 
+def answer23(data):
+    """Question 23: convert this list to a dictionary where the episode number is the key (ie: \"Episode I\") and the name is the value (ie: \"The Phantom Menace\")"""
+    episodes = {}
+    for name, number in data:
+        episodes[number] = name
+    return episodes
+
+def answer24(data):
+    """Question 24: return a sorted list (in int) containing the numbers 1-100, but without the numbers divideble with the number in data (ie. the numbers 3,6,9,12... should not be there)"""
+    return [num for num in range(1, 101) if num % data != 0]
+
+
+
+def answer25(data):
+
+    import hashlib
+    import itertools
+
+    """Question 25: this sha1 hash was found. the system it comes from normally uses 4 character kodes, consisting of a-z in lowercase"""
+    target_hash = data
+    
+    # Generate all 4-character combinations of a-z (could prob do a loop instead of using this library)
+    for combo in itertools.product('abcdefghijklmnopqrstuvwxyz', repeat=4):
+        word = ''.join(combo)
+        # Hash it (need the hashlib library - can't see how i could do without)
+        hash_obj = hashlib.sha1(word.encode())
+        current_hash = hash_obj.hexdigest()
+        
+        # Check if it matches
+        if current_hash == target_hash:
+            return word
+        
+# word = funi
+
+def answer26(data, test=None):
+    """Question 26: the data provided contains a tuple,
+    where first element is a
+    sha256. The second element contains a dictionary
+    (created by scrapping the victims facebook)
+    of words an values that the password could be generated from.
+    Assume that the password length is 8 characters,
+    and that the system requires lowercase,
+    uppercase letters and numbers."""
+    
+    return "FAILURE TO SUCCEED :("
+
+
+def answer27(data):
+    """Question 27: return the missing layer"""
+    return "network"
+
+def answer28(data):
+    """Question 28: return the mac address"""
+    return "a4:67:06:8d:83:a1"
+
+def answer29(data):
+    """Question 29: Use cap.pcapng from the network challenge. Analyse the paket(data is the packet no). What is the length of the data transmitted in this paket (in bytes)."""
+    return 39
+
+def answer30(data):
+    """Question 30: Use cap.pcapng from the network challenge. Data is a path for a HTTP request. What is Ack (raw) in the packet that acknowledges this file?"""
+    return 3775708311
+# http -> look for style.css request, packet 1611 req, 1626 response and
+# packet 1627 acknowledges getting http \style.css data/response
+
+def answer31(data):
+    """Question 31: Use cap.pcapng from the network challenge. What domain name is here?"""
+    return "0.client-channel.google.com"
+# dns.a == 74.125.143.189 - and look at dns response
+
+def answer32(data):
+    """Question 32: KEA has been infiltrated by thieves.
+    Luckily, they were chased away, and dropped what they stole. 
+    Your task is to use the recorded log data to figure out what
+    floor and room number the thieves ended up.
+    ServiceDesk gave you the following legend:
+    ^ = +1 floor, v = -1 floor, < = -1 room number, > = +1 room number.
+    Answer with a tuple containing the floor and room number,
+    considering you start on floor 0 and room 0."""
+    floor = 0
+    room = 0
+    
+    for char in data:
+        if char == "^":
+            floor += 1
+        elif char == "v":
+            floor -= 1
+        elif char == "<":
+            room -= 1
+        elif char == ">":
+            room += 1
+    
+    return (floor, room)
+
+"""
+Also thouhgt of count ...
+so here is extra:
+
+def answer32(data):
+    floor = data.count("^") - data.count("v")
+    room = data.count(">") - data.count("<")
+    return (floor, room)
+
+could also probably store what the character mean in a dict with the value.. and use those
+anyways i like for loops
+"""
+
+def answer33(data):
+    """Question 33: ServiceDesk calls you and tells you they gave you an outdated legend for the log data.
+It was from before KEA realised that having negative room numbers doesn't make sense.
+That means the room numbers wrap back around. For example if you are by room 0 and you move left (<), you will be by room 100 and vice versa.
+Furthermore the legend states that if log entries are repeated, they increment in value. 
+For example if you see >>>, the first ">" is 1, the next ">" is 2, and the last ">" is 3, totalling 6 rooms moved. 
+This incremenation resets if the current log entry differs from the previous entry."""
+    floor = 0
+    room = 0
+    incr = 1
+    prev_char = None
+    
+    for char in data:
+        if char == prev_char:
+            incr += 1
+        else:
+            incr = 1
+        
+        if char == "^":
+            floor += incr  # Floors DON'T wrap
+        elif char == "v":
+            floor -= incr  # Floors can go negative
+        elif char == "<":
+            room = (room - incr) % 101  # ONLY rooms wrap
+        elif char == ">":
+            room = (room + incr) % 101  # ONLY rooms wrap
+        
+        prev_char = char
+    
+    return (floor, room)
+
+# had ifs 100 -> 0 and reverse, but knew there was a cleaner way
+# and modulo is nice -so i adopted it
+
+
+## svar til 32 er >>> answer32(game.data(32)) = (-6, 7)
+# så er forvirret over hvorfor det er rooms der ikke kan være negative (real ligfe i get it),
+# men i det tilfæld, så var det floors der var negative
