@@ -14,7 +14,11 @@
 
 #### LAYER 4: Transport layer
 
-(protocols: TCP: in order,connection oriented (3 way handshake), congestion control, reliable (=no loss), flow control, sequecing; UDP: reverse TCP but FASTER, + EFFICIENT,LIGHTER)
+(protocols: TCP: in order,connection oriented (3 way handshake), congestion control, reliable (=no loss), flow control, sequecing;
+
+UDP: reverse TCP but FASTER, + EFFICIENT,LIGHTER)
+
+![3 way handshake](image-17.png)
 
 #### LAYER 3: Network layer
 
@@ -95,7 +99,7 @@ Cookies - Persistant, they are stored in the browser and stay there even if you 
 
 Session cookies - when you close the session, they disappear (non-persistant)
 
-Local host/ local cookies - another kind 
+Local host/ local cookies - another kind
 
 #### Connections
 
@@ -331,22 +335,24 @@ Access a mail server - port 25
 Mail sending protocols, is a push protocol. Not based on response but more on communication.
 
 3 major components:
-1. User agents 
+
+1. User agents
 2. Mail servers
 3. SMTP
 
-Uses TCP (to be reliable, you can't lose data). 
+Uses TCP (to be reliable, you can't lose data).
 
 Is a direct transfer, sending server to receiving server.
 
 3 phases of transfer:
+
 1. handshaking (greeting)
 2. transfer of messages
 3. closure
 
 Command/repsonse intercation (like HTTP). Commands arein ASCII and responses are status and code.
 
-Binary data gets encoded to 7-bit ASCII. 
+Binary data gets encoded to 7-bit ASCII.
 
 #### Example of interaction (looks like a conversation)
 
@@ -366,5 +372,3 @@ C: .
 S: 250 Message accepted for delivery
 C: QUIT
 S: 221 hamburger.edu closing connection
-
-

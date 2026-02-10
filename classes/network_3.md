@@ -71,7 +71,7 @@ Network layer packet = **datagram** (vs. segment in transport layer)
 
 ### Basics
 
-**IP address:** 32-bit identifier for host or router interface
+**IP address:** 32-bit identifier for host or router interface (or 4 bytes)
 
 **Interface:** connection between host/router and physical link
 
@@ -100,6 +100,10 @@ Network layer packet = **datagram** (vs. segment in transport layer)
 - Device interfaces with same subnet part of IP address
 - Devices can physically reach each other WITHOUT going through a router
 
+A subnet (subnetwork) is a network inside a network.
+
+Subnets make networks more efficient. Through subnetting, network traffic can travel a shorter distance without passing through unnecessary routers to reach its destination.
+
 **Example:** Network with 3 subnets:
 
 - 223.1.1.0/24
@@ -107,6 +111,9 @@ Network layer packet = **datagram** (vs. segment in transport layer)
 - 223.1.3.0/24
 
 ### Subnet Mask Notation
+
+A subnet mask is a 32-bit number that acts as a filter, dividing an
+IP address into two distinct parts: the network address (which network the device belongs to) and the host address (the specific device). It tells computers which devices are on their local network and which require a router to reach, enabling efficient data transmission.
 
 Use **/24** notation = CIDR notation
 
@@ -360,6 +367,10 @@ python -c "print('x'*1000)" | nc -u 192.168.234.254 53
 
 - Header format helps speed processing/forwarding
 - Simpler, more efficient
+
+### IPv4 Datagram Format
+
+![ipv4 datagram format](image-19.png)
 
 ### IPv6 Datagram Format
 
