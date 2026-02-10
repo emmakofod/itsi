@@ -1,13 +1,15 @@
 # Network 2
+
 ## Transport Layer
 
 ### Processes communicating
 
 Process: program running with a host. Within same host -> 2 processes communicate using inter-process communication (defined by OS, we dont do it ourselves). Processed in different hosts commuincate by exchnaging messages.
 
-Do we use UDP or TCP when creating a new ntwork app? 
+Do we use UDP or TCP when creating a new ntwork app?
 
 ### Sockets
+
 process sends/receives messages from and to its socket. (analogous to door)
 
 To send a message you need identifiers : Ip address and port number.
@@ -29,8 +31,9 @@ The source port and source IP. They must all be taken into account to find diffe
 You represent packs by sepearting them in 32 bits in length and adding mor or less lines. 32 bits is not the size of the header, just the width of the representation. As a minimum its 32 bits.
 
 1 byte is 8 bit, so its 4 bytes.
+
 - 1 bit -> a char. Has 2 parts (4 bits each - called a nible, nyble)
-- 16 bis -> a short or word. 
+- 16 bis -> a short or word.
 - 32 bits -> d-word (double word) or long
 - 64 bits -> q-word (quad word)
 
@@ -42,11 +45,11 @@ We usually count things in D-word.
 
 How demultiplexing works:
 ● host receives IP datagrams
-   ○ each datagram has source IP address,
+○ each datagram has source IP address,
 destination IP address
-   ○ each datagram carries one transport-layer
+○ each datagram carries one transport-layer
 segment
-   ○ each segment has source, destination port
+○ each segment has source, destination port
 number
 ● host uses IP addresses & port numbers to direct
 segment to appropriate socket
@@ -57,9 +60,9 @@ segment to appropriate socket
 - Full duplex - both parts can send messages when they want.
 - Point to point, one sender one receiver.
 - TCP is not secure, as default. It is reliable- all data is sent, no loss.
-- Has congestion and flow control mechanisms. 
-   - flow is securing no overloading for receiver.
-   - congestion the sender decides itsself how many packets to send based on errors received. 
+- Has congestion and flow control mechanisms.
+  - flow is securing no overloading for receiver.
+  - congestion the sender decides itsself how many packets to send based on errors received.
 - To make it secure, use TLS and TCP.
 
 Provides RELIABLE, IN ORDER byte-stream transfer ("pipe") between LCIENT and SERVER.
@@ -73,9 +76,11 @@ particular client.
 ○ allows server to talk with multiple clients
 ○ source port numbers used to distinguish clients]
 
-#### TCP handshake 
+![journey tcp to http req + response](image-18.png)
 
-to explain make a ladder diagram 
+#### TCP handshake
+
+to explain make a ladder diagram
 
 ![handshake](image-12.png)
 
@@ -97,7 +102,7 @@ acknowledgment number is the sequence number + something - server acknowledges m
 
 Header len, can variate, so we send the length min 20 bytes, so min 5 d-words = the lines for the header (in this -> 5 lines).
 
-Something not used in TCP 
+Something not used in TCP
 
 Then flags -> S is for syn (synschronize), A is for ack (acknoledge), F is for fin.
 Syn is only used to connect, not after. Fin is only used to close the connection. Indicate what we want to do with the packet.
@@ -118,7 +123,7 @@ Max segemtn size tcp 1460 (tcp header 20 and something else 20 and magic number 
 
 ### UDP
 
-unreliable transfer of groups of bytes (datagrams) between client and server. 
+unreliable transfer of groups of bytes (datagrams) between client and server.
 
 connectionless - no connection betweem client and server, no handshaking before sending data, sender attacheks dest IP + port num to each pckets explicitely
 receiver then extratcs sender ip and port from packet.
@@ -126,9 +131,8 @@ receiver then extratcs sender ip and port from packet.
 unreliable, the data may be lost of received out of order.
 faster, lightweight. DNS uses UDP, or live stuff ex live broadcast - needs to be fast and is ok if you lose some data. more interested in getting updates than all lost data fx.
 
+Best to use for DHCP and DNS because we just want to broadcast.
+
 #### udp segemnt header
 
-
 ![udp segment](image-16.png)
-
-

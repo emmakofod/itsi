@@ -31,7 +31,9 @@
 
 ## IP Protocol
 
-### IP Datagram Format
+### IPv4 Datagram Format
+
+![ipv4 datagram format](image-19.png)
 
 Network layer packet = **datagram** (vs. segment in transport layer)
 
@@ -58,7 +60,7 @@ Network layer packet = **datagram** (vs. segment in transport layer)
   - We want newest data, so old packets should die
   - Use `traceroute` to see TTL in action
 
-- **Upper layer protocol** - tells which transport protocol to deliver to (TCP/UDP)
+- **Upper layer protocol** - tells which transport protocol to deliver to (TCP/UDP) (sometimes ICMP)
 - **Header checksum** - quick (not super reliable) way to check if packets sent = packets received
 - **32-bit source IP address** (4 bytes)
 - **32-bit destination IP address** (4 bytes)
@@ -71,7 +73,7 @@ Network layer packet = **datagram** (vs. segment in transport layer)
 
 ### Basics
 
-**IP address:** 32-bit identifier for host or router interface
+**IP address:** 32-bit identifier for host or router interface (or 4 bytes)
 
 **Interface:** connection between host/router and physical link
 
@@ -100,6 +102,10 @@ Network layer packet = **datagram** (vs. segment in transport layer)
 - Device interfaces with same subnet part of IP address
 - Devices can physically reach each other WITHOUT going through a router
 
+A subnet (subnetwork) is a network inside a network.
+
+Subnets make networks more efficient. Through subnetting, network traffic can travel a shorter distance without passing through unnecessary routers to reach its destination.
+
 **Example:** Network with 3 subnets:
 
 - 223.1.1.0/24
@@ -107,6 +113,9 @@ Network layer packet = **datagram** (vs. segment in transport layer)
 - 223.1.3.0/24
 
 ### Subnet Mask Notation
+
+A subnet mask is a 32-bit number that acts as a filter, dividing an
+IP address into two distinct parts: the network address (which network the device belongs to) and the host address (the specific device). It tells computers which devices are on their local network and which require a router to reach, enabling efficient data transmission.
 
 Use **/24** notation = CIDR notation
 
@@ -249,7 +258,9 @@ Check in Wireshark:
 ### What is NAT?
 
 - Allows entire local network to use **one public IP address** as far as outside world is concerned
-- Router sits between local network and Internet, translating addresses
+- Router sits between local network and Internet, **translating local addresses to public addresses** LAN addr to WAN addr
+
+NAT is a receptionist making all calls from one company number, tracking which extension really called, and routing replies to the right person.
 
 ### NAT Setup Example
 
@@ -362,6 +373,8 @@ python -c "print('x'*1000)" | nc -u 192.168.234.254 53
 - Simpler, more efficient
 
 ### IPv6 Datagram Format
+
+![ipv6 datagram format](image-20.png)
 
 **Fixed-length 40-byte header** (vs. variable in IPv4)
 
