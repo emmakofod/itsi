@@ -31,7 +31,9 @@
 
 ## IP Protocol
 
-### IP Datagram Format
+### IPv4 Datagram Format
+
+![ipv4 datagram format](image-19.png)
 
 Network layer packet = **datagram** (vs. segment in transport layer)
 
@@ -58,7 +60,7 @@ Network layer packet = **datagram** (vs. segment in transport layer)
   - We want newest data, so old packets should die
   - Use `traceroute` to see TTL in action
 
-- **Upper layer protocol** - tells which transport protocol to deliver to (TCP/UDP)
+- **Upper layer protocol** - tells which transport protocol to deliver to (TCP/UDP) (sometimes ICMP)
 - **Header checksum** - quick (not super reliable) way to check if packets sent = packets received
 - **32-bit source IP address** (4 bytes)
 - **32-bit destination IP address** (4 bytes)
@@ -256,7 +258,9 @@ Check in Wireshark:
 ### What is NAT?
 
 - Allows entire local network to use **one public IP address** as far as outside world is concerned
-- Router sits between local network and Internet, translating addresses
+- Router sits between local network and Internet, **translating local addresses to public addresses** LAN addr to WAN addr
+
+NAT is a receptionist making all calls from one company number, tracking which extension really called, and routing replies to the right person.
 
 ### NAT Setup Example
 
@@ -367,10 +371,6 @@ python -c "print('x'*1000)" | nc -u 192.168.234.254 53
 
 - Header format helps speed processing/forwarding
 - Simpler, more efficient
-
-### IPv4 Datagram Format
-
-![ipv4 datagram format](image-19.png)
 
 ### IPv6 Datagram Format
 
