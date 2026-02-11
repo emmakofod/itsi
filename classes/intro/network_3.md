@@ -394,7 +394,7 @@ python -c "print('x'*1000)" | nc -u 192.168.234.254 53
 
 **Removed:**
 
-- **Checksum:** removed entirely to reduce processing time at each hop
+- **Checksum:** removed entirely to reduce processing time at each hop (had to calculate new checksum based on new TTL every time)
 - **Fragmentation:** moved out of router responsibility
 
 **Changed:**
@@ -430,7 +430,7 @@ python -c "print('x'*1000)" | nc -u 192.168.234.254 53
 
 ### Purpose
 
-Used by hosts and routers to communicate **network-level information**
+Used by hosts and routers to communicate **network-level information**. Is used as a status indicator.
 
 **Functions:**
 
@@ -468,6 +468,8 @@ Used by hosts and routers to communicate **network-level information**
 ### Traceroute and ICMP
 
 **How traceroute works:**
+
+Some routers disable traceroute to stay anonymous.
 
 1. **Source sends series of UDP segments to destination**
    - First set: TTL = 1

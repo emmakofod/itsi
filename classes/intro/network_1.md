@@ -8,6 +8,8 @@
 
 ### Top down approach
 
+![5 layer model](image-21.png)
+
 #### LAYER 5: Application layer
 
 (protocols: HTTPS=443, DNS=53, SMTP=25, FTP=20/21, HTTP=80, SSH=22, NTP=123, DHCP=67/68) -BY HEART

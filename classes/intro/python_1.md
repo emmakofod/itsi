@@ -234,7 +234,6 @@ while a>3:
 Can contain break (ends the loop) and continue statements (aborts only the current
 iteration of the loop)
 
-
 #### Break vs continue statements
 
 ```
@@ -246,6 +245,7 @@ while i>1:
     print("Value of i is now ", i)
 print("Value of i is ", i
 ```
+
 ### For loop
 
 Can be done on all Collection types in python + strings
@@ -266,6 +266,7 @@ for i in x(/d/l/etc):
 loop on dict - prints the key
 
 for the values, use other methods in loop
+
 ```
 for i in d.values():
     print(i)
@@ -282,6 +283,7 @@ s = "Emma"
 for i in s:
     print(i)
 ```
+
 will return the first letter, the length of the string is the range.
 
 ```
@@ -291,11 +293,10 @@ for i in s[-4::]:
 
 we can use other methods there too
 
-
 #### tuple unpacking (out of scope for now)
 
 for i, j in d.items():
-    print(f"key is {i} and value is {j}")
+print(f"key is {i} and value is {j}")
 
 x = ["a", "b", "c"]
 
@@ -304,8 +305,8 @@ d = {"name": "emma", "age": 27}
 s = "emma"
 
 for index, item in enumerate(x):
-    for i in d.value():
-        print(i)
+for i in d.value():
+print(i)
 
 enumerate() return the item you look at and the index
 
@@ -316,6 +317,7 @@ w - write
 a - write, appending to the end of any data already in the file
 
 #### Reading
+
 ```
 file_object = open('myfile', 'r') # open myfile in read mode
 
@@ -340,7 +342,7 @@ file_object.close() # frees up system resourcess
 
 #### Writing
 
-"w" write mode overwrites, "a" append mode just adds to the end. 
+"w" write mode overwrites, "a" append mode just adds to the end.
 
 You can be in write mode and write all you need as long as you ar eint he cntext manager.
 
@@ -353,4 +355,3 @@ x = "Emma"
 with open("file.txt", "w") as file:
     file.write(x + "\n") # if you add a new line, it doesnt overwrite
 ```
-
