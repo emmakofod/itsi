@@ -154,14 +154,13 @@ def answer24(data):
     return [num for num in range(1, 101) if num % data != 0]
 
 
-
 def answer25(data):
 
     import hashlib
     import itertools
 
     """Question 25: this sha1 hash was found. the system it comes from normally uses 4 character kodes, consisting of a-z in lowercase"""
-    target_hash = data
+    vic_hash = data
     
     # Generate all 4-character combinations of a-z (could prob do a loop instead of using this library)
     for combo in itertools.product('abcdefghijklmnopqrstuvwxyz', repeat=4):
@@ -171,7 +170,7 @@ def answer25(data):
         current_hash = hash_obj.hexdigest()
         
         # Check if it matches
-        if current_hash == target_hash:
+        if current_hash == vic_hash:
             return word
         
 # word = funi
@@ -186,7 +185,119 @@ def answer26(data, test=None):
     and that the system requires lowercase,
     uppercase letters and numbers."""
     
-    return "FAILURE TO SUCCEED :("
+    import hashlib
+    import itertools
+    import ast
+
+    # STEP 1 — Parse the provided string safely into Python data
+
+    # The game gives us data:
+    # '(("hash"),[(tuple1),(tuple2),...])' - NO DICT though..
+    #
+    # Use ast.literal_eval to safely convert string → Python object
+    # (literal_eval is safe because it only parses literals, not code) - have seen other methods that also
+    # parse executables and runs them - don't want to risk anything.
+
+    parsed = ast.literal_eval(data)
+
+    vic_hash = parsed[0]        # SHA256 to match (som many billions possiilities - no brute force - use human thinking and engineering)
+    scraped_data = parsed[1]         # The list of tuples with vics facebook inmportant info scraped
+
+
+    # STEP 2 — Flatten + put tokens in boxes
+
+    # Extract all words + numbers -> separate lists ( != dta types, everytiong into its own box)
+
+    words = []
+    numbers = []
+
+    for group in scraped_data:
+        for token in group:
+            if token.isdigit():
+                numbers.append(token)
+            else:
+                words.append(token)
+
+    # Normalize capitalization for consistency
+    # Humans usually capitalize names - as a fellow human i would know, its a guessing and patience game
+    words = [w.capitalize() for w in words]
+
+
+    # STEP 3 — Validation
+
+    # Enforce CONSTRAINTS BEFORE hashing
+    # so 8 chars, upper + lower case + ints
+    # that way no "bad" guesses taken into accoutn
+
+    def make_valid_pwd(pwd):
+        return (
+            len(pwd) == 8 and
+            any(c.islower() for c in pwd) and
+            any(c.isupper() for c in pwd) and
+            any(c.isdigit() for c in pwd)
+        )
+
+
+    # STEP 4 — Hash comparison
+
+    # SHA256 is one-way, no reversible etc etc etc 
+    # We hash each candidate and compare to target. so we need "good" guesses, educated guesses, human like guesses
+    # so i have to try and be Lars and how i would make my pwd as someone who .. maybe? dont kno about it idk
+
+    def matches_hash(pwd):
+        return hashlib.sha256(pwd.encode()).hexdigest() == vic_hash
+
+
+
+    # STEP 5 — Structured Combination Strategy
+
+    #
+    # Rule! no brute force, so it has to be something that we student can work through and "guess" - a pettern
+    # patterns are good, they are guessable
+    #
+    # so:  generate:
+    #
+    #   word_slice + word_slice + number_slice
+    # like ive tried a lot before this function so ive tried other patterns, this one won, so this one i keep obvs.
+    #
+    # This models real human password behavior:
+    #   - name fragment
+    #   - surname fragment
+    #   - important year - my guy had a child i suppose "JAN" and the year is the most important date
+    #
+    # THE ONE that worked:
+    #   LaHa2014 - i feel ike i couldve guessed it, but nvm its still cool 
+    #
+    # This is:
+    #   Lars[:2] + Hansen[:2] + 2014
+
+
+    tested = 0  # Debugging, i love data
+
+    for w1, w2 in itertools.permutations(words, 2):
+
+        for n in numbers:
+
+            # Try different slice lengths of both words and number
+            for i in range(1, len(w1) + 1):
+                for j in range(1, len(w2) + 1):
+                    for k in range(1, len(n) + 1):
+
+                        candidate = w1[:i] + w2[:j] + n[:k]
+                        tested += 1
+
+                        # Check constraints BEFORE hashing - dont need to use extra memory or wathever on passwords not valid
+                        if make_valid_pwd(candidate):
+
+                            if matches_hash(candidate):
+                                print(f"[+] Password found after {tested} attempts")
+                                return candidate
+
+    # If nothing found - but like i found it hehe
+    print(f"[-] No password found after {tested} attempts")
+    return None
+
+# LaHa2014 - hahahah
 
 
 def answer27(data):
