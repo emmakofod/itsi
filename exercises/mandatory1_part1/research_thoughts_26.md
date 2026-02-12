@@ -59,7 +59,7 @@ It makes me feel accomplished. I am not the best, and I will surely never be the
 
 **Clue 1: Question 25**
 
-The answer to question 25 was "funi" - which sounds like "funny" when you say it out loud. That made me realize maybe this wasn't straightforward. Maybe it was cheeky or unexpected.
+The answer to question 25 was "funi" - which sounds like "funny" when you say it out loud. That made me realize maybe this wasn't straightforward. Maybe it was a pun or something fun or unexpected.
 
 **Clue 2: The "Dictionary" That Wasn't**
 
@@ -67,7 +67,7 @@ The question said the data was a "dictionary" but it was actually a list of tupl
 
 **Clue 3: The Teacher's Hint**
 
-My teacher finally gave me a hint in Danish:
+My teacher finally gave me a hint:
 
 > "You need to tokenize the keywords and make combinations."
 
@@ -122,10 +122,10 @@ Breaking it down:
 
 It's:
 
-- 8 characters exactly ✓
-- Has uppercase (L, H) ✓
-- Has lowercase (a, a) ✓
-- Has numbers (2014) ✓
+- 8 characters exactly
+- Has uppercase (L, H)
+- Has lowercase (a, a)
+- Has numbers (2014)
 
 **It worked!**
 
@@ -153,7 +153,6 @@ People do this ALL THE TIME. They think they're being clever by truncating their
 - Sometimes you need to completely change your approach (I went from "try obvious combinations" to "tokenize and recombine")
 - Asking for help/hints is smart, not cheating
 - Persistence matters - I was ready to quit multiple times but kept going
-- Thinking in Danish helped! Remembering cultural context (like how Danes think about passwords) was important
 
 **About Security:**
 
@@ -176,32 +175,21 @@ I tried:
 
 The key was reducing the search space from "all possible 8-character combinations" (trillions) to "realistic human password patterns based on available data" (hundreds).
 
-### Why Only 2 People Solved This
-
-Looking at the class results, only 2 out of 60+ students solved question 26. I think this is because:
-
-1. **It required a mindset shift** - from "brute force everything" to "think like a human"
-2. **The hint was crucial** - without understanding "tokenize", you'd never get there
-3. **It took persistence** - most people probably gave up after the obvious combinations failed
-4. **You needed to think systematically** - writing code to generate token combinations wasn't obvious
-
-I almost gave up multiple times, but I'm glad I kept going!
-
 ### Final Thoughts
 
-This challenge taught me that cybersecurity isn't just about knowing technical stuff. It's about understanding how humans think and behave.
+This challenge reinforced that cybersecurity isn't just about knowing technical stuff. It's about understanding how humans think and behave.
 
 The most secure encryption in the world doesn't help if your password is based on predictable personal information.
 
-Also: I'm never using personal info in my passwords again. This was way too easy once I knew the pattern!
+Also: You should never using personal info in passwords again. This was "way too easy" once I knew the pattern!
 
-### Technical Details (For the Nerds)
+### Technical Details
 
 **Hash Algorithm:** SHA-256  
 **Password Found:** LaHa2014  
 **Method:** Tokenization + Behavioral Modeling  
 **Search Space Reduction:** From ~218 trillion to ~500 realistic candidates  
-**Time Spent:** Several hours (but worth it!)  
+**Time Spent:** Around 5 hours
 **Final Score:** 34/34 🎉
 
 ---
