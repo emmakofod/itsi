@@ -396,5 +396,5 @@ This incremenation resets if the current log entry differs from the previous ent
 
 
 ## svar til 32 er >>> answer32(game.data(32)) = (-6, 7)
-# så er forvirret over hvorfor det er rooms der ikke kan være negative (real ligfe i get it),
+# så er forvirret over hvorfor det er rooms der ikke kan være negative (real life i get it),
 # men i det tilfæld, så var det floors der var negative
