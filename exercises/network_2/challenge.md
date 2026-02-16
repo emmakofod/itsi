@@ -83,20 +83,20 @@ flags ack 1
 
 ![alt text](image.png)
 
-## Comprehensive Answers with Packet Numbers
-
 ---
 
 ### Question 1: What is the IP address of demo.testfire.net, and what is Thor's IP address?
 
 **Methodology:**
 
-1. Apply display filter: `dns.qry.name contains "testfire"`
+1. Apply display filter: `dns` and look for testfire
 2. Look at DNS response packets (packets 1573, 1576)
 3. Check the "Answers" section to see the resolved IP: 65.61.137.117
 4. Thor's IP can be seen as the source IP in any outgoing packet or destination in DNS responses
 
 **Answer:**
+
+![1](image-1.png)
 
 - **demo.testfire.net IP:** 65.61.137.117
 - **Thor's IP:** 192.168.1.125
@@ -112,10 +112,8 @@ flags ack 1
 
 **Methodology:**
 
-1. Apply display filter: `dns.qry.name contains "testfire"`
-2. Identify packets with DNS responses (look for packets with "Answers" field populated)
-3. Examine packets 1573 and 1576 - these contain DNS A record responses
-4. Check the DNS answer section to see the resolved IP address
+1. Same as question 1
+2. Check packets and wireshark has symbols for responses (arrows)
 
 **Answer:**
 DNS responses were received in packets **1573** and **1576**.
