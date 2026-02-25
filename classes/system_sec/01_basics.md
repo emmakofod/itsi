@@ -31,6 +31,7 @@ Importance levels:
 
 
 ### Sec policy
+
 #### Structure
 
 Policy is essential - otherwise its just random. Randomness is worse than an enemy, you can't expect anything from randomness.
@@ -45,7 +46,25 @@ Set of rules and practices. A least:
     - anything nor permitted should be restricted
 **Policy that both users and admins must follow**
 
+**General policy**
+    - Physical protection, rooms, doors, power outage etc,
+    - Admin of servers -> limited team only
+    - Any compliance to external rules must e added into the security policy
+    - Each server must be registered with at least : location, os version, HW config, services + apps being run
+    - All info in management sys mus be up to date
+
+**Configuration policy**
+    - any service not used should be removed
+    - all access should be logged 
+    etc
+
+**Monitoring policy**
+
+etc...
+
+
 #### Examples
+
 **pwd policy**
 can be divided in sub-policies
 Paswword creation is a sub policy:
@@ -56,18 +75,43 @@ Paswword creation is a sub policy:
     - changes all default pwd
 
 **pwd protection policy**
-- pwd are confidential info - not shared with anyone
-- pwd not be setn per email or similiar
-- never tell pw on phone or in questionnaires
-- pw hints should not give any hints - bad
-- do not keep pwd written in office
-- do not use remember pwd ft. in apps
-- when in doubt, report incident and change pwd
+    - pwd are confidential info - not shared with anyone
+    - pwd not be setn per email or similiar
+    - never tell pw on phone or in questionnaires
+    - pw hints should not give any hints - bad
+    - do not keep pwd written in office
+    - do not use remember pwd ft. in apps
+    - when in doubt, report incident and change pwd
 
-etc
+and so many others
+
+#### Why do we have policies
+- **Creating a repeatable and consistent process for managing information**
+- Educating workforce members around best practices and corporate security protocols
+- **Documenting controls to ensure people adhere to security measures**
+- Meeting mission-critical **compliance** requirements
+- Establishing guidelines for detecting new threats and mitigating new risks
+- Giving customers confidence over your org's security posture
+- Ensuring appropriate access to IT and data resources on a "as needed" basis 
+
+=> That your process is consistent and repeatable, to ensure quality
+
+
 
 ### Linux
 
 
 ### Media integrity
+
+Whenever doing an install:
+- new software or new version : 
+    - integrity check the media, or dl file BEFORE use : checksum, avoiod installing "additional" free features - could be malware 
+- new sw with new media
+    - maybe also test i sandbox before approval for use in systems
+- known sw
+    - use the one you have tested before
+
+#### How to check for integrity
+
+Hash / Checksum check
 
