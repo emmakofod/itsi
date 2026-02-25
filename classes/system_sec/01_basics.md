@@ -1,6 +1,4 @@
-# System sec
-
-## Basics
+# Basics
 
 system security: 
 - Company data : data is either at rest or in transit
@@ -30,9 +28,9 @@ Importance levels:
 **What** is this, **how** does this work, **why** is it important (explain this)
 
 
-### Sec policy
+## Sec policy
 
-#### Structure
+### Structure
 
 Policy is essential - otherwise its just random. Randomness is worse than an enemy, you can't expect anything from randomness.
 
@@ -63,7 +61,7 @@ Set of rules and practices. A least:
 etc...
 
 
-#### Examples
+### Examples
 
 **pwd policy**
 can be divided in sub-policies
@@ -85,7 +83,7 @@ Paswword creation is a sub policy:
 
 and so many others
 
-#### Why do we have policies
+### Why do we have policies
 - **Creating a repeatable and consistent process for managing information**
 - Educating workforce members around best practices and corporate security protocols
 - **Documenting controls to ensure people adhere to security measures**
@@ -98,10 +96,10 @@ and so many others
 
 
 
-### Linux
+## Linux
 
 
-### Media integrity
+## Media integrity
 
 Whenever doing an install:
 - new software or new version : 
@@ -111,7 +109,24 @@ Whenever doing an install:
 - known sw
     - use the one you have tested before
 
-#### How to check for integrity
+### How to check for integrity
 
 Hash / Checksum check
 
+## Disk Encryption
+Data is "parked" on hard drive.
+    - protected by OS controles:
+        - spec users are allowed spec access
+        - others users no access granted
+
+What is the easiest way to bypass the OS controls if attacker has local access?
+- Human engineering, i can pretend to be an "invisible" worker, install own OS, use it for access to disk.
+
+How do you defend against that?
+Encrypt your disk, ex LUKS to encrypt partition.
+Dont loose the encryption key, so keep a safe record of the key in a safe location.
+
+## Sudo access
+
+## Privilege separation
+role based access control 
