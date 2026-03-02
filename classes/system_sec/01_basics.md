@@ -127,6 +127,17 @@ Encrypt your disk, ex LUKS to encrypt partition.
 Dont loose the encryption key, so keep a safe record of the key in a safe location.
 
 ## Sudo access
+Root or admin user on a system can do anything - good for admin stuff but dangerous because no accountability.
+
+Always have a plan for when/how/who can use root users.
+Root user id should not be shared. individual admin userids with sudo access + other userid for low privilege work.
+
+Not all commands need sudo. Commands not needing sudo can still be protected. Fiind the coommand file and set file permissions - eliminate permission from others. ex - shutdown command.
+
+File permissions defaults are different on desk sys and server sys.
 
 ## Privilege separation
 role based access control 
+
+Privilege separation is fundamental, not all job functions should be able to access all data, not every it admin should be able to admin eveything either (db admin, network admin, sys admin) - different admin users for different responsibility areas.
+
