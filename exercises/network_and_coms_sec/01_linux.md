@@ -1,5 +1,7 @@
 ## [LINUX.01] Exercises — Command Answers
 
+Look in kali vm for the file.
+
 ```bash
 # Task 1: Number of unique IP addresses
 cut -d ' ' -f1 access.log | sort | uniq | wc -l > task1.txt
