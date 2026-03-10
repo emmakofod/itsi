@@ -142,9 +142,90 @@ States can be :
 
 ## Network Segmentation
 
+- We divide the exposed areas into smaller sections
+- If certain parts are exploited, the rest is still protected
+- Gives better transparency and makes network more manageable.
 
+![levels of segmentation](image-7.png)
+
+From most extreme to softest.
+
+### Air Gap
+Makes sure that the segment iis completely disconnected to the outside world, and only maintain a LAN. Make a segemnt airtight.
+
+### Data Diode
+Only allows traffic to pass in one direction, and physically not allows it to pass in the other direction
+
+(The 3 levels we are looking at for mandatory 1:)
+
+### Firewall (Layer 3-4)
+Stateful Rules that can apply on network traffic
+
+### ACL (Layer 3, Stateless rules to implement on routers)
+Stateless rules that can apply on network traffic
+
+### VLAN (datalink layer)
+Tagging traffic on certain ports/devices and only allowing the traffic from these ports to travel to spec ports.
+
+When we segemnt we also look at:
+
+#### DMZ
+Demilitarized Zone
+ A spot in the network behind the firewall where there is some protection, but some internal resources are still available to the inside/outside world.
+
+**Two ways of repreenting DMZ:**
+
+![DMZ](image-8.png)
+![other DMZ representation](image-13.png)
+
+A location on the network where we have more breathing room- less protection.
+So some traffic normally not allowed on LAN, is allowed there.
+Typically used for externnal NEW connection to access servers.
+
+![DMZ example](image-9.png)
+
+![DMZ compromised](image-10.png)
+![DMZ compromised the other way](image-11.png)
+
+If someone compromises the DMZ and tries to movce on to the LAN segemnt, the firewall will prevent that.
+
+![DMZ established conn](image-12.png)
+
+But if user establishes conn. from iinside of external server, then traffic coming back will also be allowed, due to statefullness of firewall.
+
+![multiple firewalls for multiple DMZs](image-14.png)
+
+#### VPN into a network
+![vpn into a network](image-15.png)
+
+## Trad approach
+Traditionally firewall are used to protect teh network in a perimeter. Separating between trusted and untrusted perimeter. Once inside the tristed perimeter, traffic flow freely. (This approach when doing mandatory).
+
+You need inherent trust for this approach, there we also have ZT approach, Zero trust approach.
 
 ## Zero Trust Architecture
 
+Is newer.
 
-## Mandatory 1
+- Is a paradigm, we do not inherit trust.
+- We do not operate in trusted and untrusted "spheres". NONE are inherently trusted, nor implied trusted and must gain trust by some mean.
+- This goes for Users, Systems and Devices.
+- In ZT, trust is not a matter of setup on devices/HW, but going through all the systems.
+- This approach is fairly new, and not implemented fully everywhere yet, nor is the terminology (in books fx).
+
+### Key components
+- User/system/device:
+ - Authentication: encryption is key.
+ - Authenticating trust: private certificates or PKI is the key to ensure trust and non repudiation
+ - Minimizing trust: POLP
+ - Authorization: ensuring that it is req based on identity and context.
+
+In general, for all data we must ensure ENCRYPTION, INTEGRITY and NO REPLAY.
+
+![ZT policy](image-16.png)
+
+**Subject** is a User, system or device. Could be a combination of above.
+**Policy Enforcement Point PEP** makes sure allows or denies access depending on PDP. Can also be seen as an app proxy.
+**Policy Decision Point PDP** looks at subject and context of request to the resource. The policy engine makes a deciision based on the policies on "policy administrator" and can lso implement a "trust engine" that can aid the policy engine with a score.
+
+Finally the deciisionn is based on inut from ID manage,ent, PKI, SIEM etc.
