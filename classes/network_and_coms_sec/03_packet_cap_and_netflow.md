@@ -210,7 +210,7 @@ F.ex: Rotating Full packet capture after 1 week and netflow data after 365 days
 
 Setting up netflow sensors on all routers, but only for full packet capture on critical segments.
 
-### COnponents needed
+### Components needed
 
 #### Fprobe (gen)
 this is the exporter that generates the netflow updates (mkes the session, collects it and sends it)
