@@ -35,16 +35,25 @@ sha256sum nmap-7.95.tar.bz2
 ip a
 
 # Scan your home network
-nmap -sn 192.168.1.0/24
+nmap -sn 10.136.132.0/24
 
 # Scan with OS detection
-sudo nmap -O 192.168.1.0/24
+sudo nmap -O nmap -sn 10.136.132.0/24 --- unreliable without port scan
 ```
+
+![alt text](image-7.png)
+
+10.136.132.1: gateway/router
+10.136.132.2 (ekko-loq): that's me 
+10.136.132.3–251: other devices on the network
+
+!!! school network scan-- but no port : that is illegal cause not my own
+
 
 - `-sn`: ping scan, just finds live hosts without scanning ports
 - `-O` : tries to detect the OS of each host
 - Make sure all devices are turned on before scanning so nothing is missed
-- Common surprises: smart TVs, printers, old phones, neighbours if your range is wrong
+- Common surprises: smart TVs, printers, old phones etc if range is wrong
 - Nmap often identifies hardware vendor from the MAC address
 
 
@@ -64,10 +73,11 @@ sudo nmap -sV 192.168.1.x
 - 631/tcp — CUPS 2.4 (printing service)
 - 902/tcp — VMware Auth Daemon
 - 5900/tcp — SPICE 2.2 (VM remote display)
+![alt text](image-8.png)
 
 **Analysis:**
 
-- **631 — CUPS** — Common Unix Printing System. Manages printers on Linux.
+- **631 — CUPS**: Common Unix Printing System. Manages printers on Linux.
   Can be disabled if you don't print.
 - **902 — VMware Auth Daemon** — Used by VMware Workstation to authenticate
   remote connections to VMs. Expected on my machine since I run VMware.
@@ -85,3 +95,8 @@ sudo nmap -sV 192.168.1.x
 - Always on machines w internet or work machines?
 - As part of initial server setup (hardening)
 - Any machine w sensitive data.
+
+
+![os scan localhost](image-9.png)
+
+not 100 accurate, my kernel is newer

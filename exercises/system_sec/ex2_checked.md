@@ -81,4 +81,4 @@ gpedit.msc for group policies and for adding users, the gui is sufficient, or lu
 
 https://www.digitalcitizen.life/geeks-way-managing-user-accounts-and-groups/
 
-Why? beacuse pirnciple of least privilege, a user must only have access to what they must use for their jobs. no room for errors or misuse. we protect and segregate data and files. Only people concerned with womthing can have access to it.
+Why? beacuse pirnciple of least privilege, a user must only have access to what they must use for their jobs. no room for errors or misuse. we protect and segregate data and files. Only people concerned with something can have access to it.
