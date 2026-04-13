@@ -143,4 +143,15 @@ If digest size is reduced -> security is reduced aswell
 > never lower than 128bit for pre & second image resistance ex password protection
 
 ## Pwd protection
+
+Most common case for crypto hash functions.
+
+Login system, how to store pwd?
+Hash pwd at the server sidie with cryptographically secure hash function. If attacker steals the db, the attacker will only see the hashes.
+
+###
+
+
+
+
 ## Key derivation functions
