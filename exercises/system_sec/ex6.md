@@ -17,3 +17,9 @@
 
 ![groups](image-23.png)
 ![users](image-22.png)
+
+> getent passwd
+![getent passwd on ubuntu desktop](image-24.png)
+
+![login as jdoe](image-25.png)
+![whoami + id on jdoe](image-26.png)

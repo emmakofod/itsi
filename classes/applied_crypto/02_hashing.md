@@ -146,12 +146,94 @@ If digest size is reduced -> security is reduced aswell
 
 Most common case for crypto hash functions.
 
+![pwd hash protection diagram](image-3.png)
+
 Login system, how to store pwd?
 Hash pwd at the server sidie with cryptographically secure hash function. If attacker steals the db, the attacker will only see the hashes.
 
-###
+>>> **C**IA 
+
+### What if you dont trust the service to not store your pwd in clear?
+The rigth way would be :
+1. Generate the hash from your pwd and the site name, using a tool separate from your browser
+2. Use the result as your pwd
+
+> But thast the same as creating a brand new pwd adn remembering it in a secure place (or pwd manager)
+
+### Rainbow tables
+
+Lists of pwd hashes you can sue to brute force a pwd.
+you can easily find them on google etc.
+
+### Hwo to prevent offilne attacks
+Add salt to the pwd before hashing. But they dont help preventing modern attacks. Modern attacks take the advantage of the fact that the hash function being used is easy and quick too compute.
+
+So it's better to use a good password storage to begin with.
+
+### Then how to do it?
+
+We need a pwd based key derivation function. It uses hash functions as building block, but has other important properties aswell.
+
+### Cracking tools
+Hashcat, John the Ripper
+
+Methods:
+    - Brute force attacks
+    - Mask attacks
+    - Dictionary attacks
+    - Rainbow table
 
 
+## Key derivation functions KDF
+Derive one or more secret values fromt one secret value. Hard to compute, i.e. requires many computing services.
 
+### Pwd based KDFs
 
-## Key derivation functions
+Combines:
+    - salting: to avoid precomputed Rainbow Tables
+    - iterations: to slow it down
+
+Some KDFs:
+    - PBKDF2
+    - Bcrypt
+    - Argon2
+    - Scrypt
+
+### PBKDF2
+
+Published in 2000.
+It applies a pseudo random function to the input pwd along with a salt value and repeats the process many times,
+
+List of implemetations -> [find link in slides]
+
+Number of iterations can be adjusted.
+
+Problem: Easlily parallelised on multi cored systems (GPUs) and trivial for tailored syystems (FPGA, ASICs)
+
+### Bcrypt
+From 1999
+
+Uses blockcipher blowfish
+CPU intensive and RAM intensive
+
+Problem : Mot broken, but it's not that intensive with FPGA.
+
+### Scrypt
+
+Designed to use a large amount of memory compared to other pwd based KDFs.
+> Negligible cost ofr one pwd mathc, but consequential for attacker trying multiple.
+
+Used for some crypto currencies as proof of work.
+
+### Argon2
+
+delected as winner og Password hashing competition in 2015
+Used by PyNaCl crypto lib
+
+3 params : execution time, meory required, degree of parallelism.
+
+Has 3 variants
+1. Argon2d: optimized to resist GPU attacks
+2. Argon2i: optimizedto resist side channel attacks
+3. Argon2id: hybrid og two first - recommended for newer systems
+
