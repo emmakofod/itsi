@@ -1,103 +1,172 @@
-Remote Authentication & SSH
-Remote Login Overview
-Remote login is used when users need to authenticate to a central service over the network (mail server, HR system, CRM, billing, etc.)
+# System Security – Notes 8
+## Remote Authentication & SSH
 
-SSH is used as a lab demo service (not representative of a typical business app)
-Old protocols rlogin and rsh are unencrypted — remove them
-Use OpenSSH instead
+---
 
-bashsudo apt-get install openssh-server
+## Remote Login Overview
+
+Remote login = users authenticating to a **central service over the network** (mail, HR, CRM, billing, SSH...)
+
+- Old protocols `rlogin` and `rsh` are **unencrypted** — remove them
+- Use **OpenSSH** instead — encrypts all traffic between client and server
+- SSH is used as a lab demo service (it's just the example — imagine it's your billing system)
+
+```bash
+sudo apt install openssh-server
 sudo service ssh start
+service --status-all | grep ssh    # check if running
+```
 
-Hardening SSH
-Config file: /etc/ssh/sshd_config
-Always back up first:
-bashsudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+---
 
+## Hardening SSH — sshd_config
 
+Always back up before editing:
+```bash
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+sudo nano /etc/ssh/sshd_config
+```
 
-1. Change default port
+After any change:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart ssh.socket
+```
+
+---
+
+### 1. Change Default Port
+
+```
 Port 22123
+```
 
-Avoids automatic detection by standard scans
-nmap scans port 22 by default and won't find the service
+- Automated bots constantly scan port 22
+- Moving to a non-standard port drops off most automated attack traffic
+- Security through obscurity — not a real defence alone, but reduces noise and log spam
+- Test: `nmap` scans port 22 by default → SSH won't show up
 
+---
 
-![disbale rootlogin + change default port](image-1.png)
+### 2. Disable Root Login
 
-2. Disable root login
+```
 PermitRootLogin no
+```
 
-Ubuntu default is prohibit-password (no root login with password)
-Should be verified on every system — never assume
+- Ubuntu default is `prohibit-password` (commented out) — always verify, never assume
+- With root disabled: attacker must compromise a normal user first, then escalate
+- Adds an extra step to the attack chain — more time for detection
 
-![disable root login](image.png)
+---
 
-3. Restrict users / groups
-AllowUsers user1 user13 user17
-AllowGroups group1 admin
+### 3. Restrict Users / Groups
 
-![allowgroups sshusers](image-2.png)
-![user1 allowed to ssh but user3 not](image-3.png)
+```
+AllowUsers user1 user2
+AllowGroups sshusers
+```
 
-4. Restart after changes
-bashsudo service ssh restart
+- Least privilege: only people who actually need SSH access should have it
+- Fewer accounts = fewer brute force targets
+- If credentials are stolen, they can't SSH in if not in the allow list
 
-SSH Hardening Summary
-ProtectionHowNon-standard portPort 22123 in sshd_configDisable root loginPermitRootLogin noLeast privilegeAllowUsers / AllowGroupsEncrypted trafficSSH encrypts by defaultGeographic restrictionFirewall / fail2ban rulesTime-based restrictionPAM time moduleSession timeoutClientAliveInterval in sshd_config
+---
 
-Public/Private Key Authentication
-Password = something you know → guessable, reusable, phishable
-Private key = something you have → not guessable, 256-bit key space (~10⁷⁵ combinations)
-Key generation (on client):
-bashsu user1
-ssh-keygen -t rsa        # keys saved to ~/.ssh/
+### SSH Hardening Summary
 
-~/.ssh/id_rsa → private key (never share)
-~/.ssh/id_rsa.pub → public key (safe to share/copy)
-Optional: add a passphrase to protect the private key file
+| Protection | Config line | Why |
+|---|---|---|
+| Non-standard port | `Port 22123` | Avoids automated scanning |
+| Disable root login | `PermitRootLogin no` | Prevents direct root access |
+| Restrict users | `AllowUsers` / `AllowGroups` | Least privilege |
+| Encrypted traffic | Default in SSH | Prevents eavesdropping |
+| Session timeout | `ClientAliveInterval` | Closes idle sessions |
+| Geographic restriction | Firewall / fail2ban | Limits attack surface |
 
-![keygen on user2 without passphrase for the sake of remebering it ](image-5.png)
+---
 
-Copy public key to server:
-bash > ssh-copy-id 192.168.x.x
+## Public/Private Key Authentication
 
-Adds public key to ~/.ssh/authorized_keys on the server
+Password = something you **know** → guessable, phishable, reusable  
+Private key = something you **have** → 256-bit, ~10⁷⁵ combinations, not guessable
 
-![ssh-copy-id to server](image-6.png)
-![key works ](image-7.png)
+---
 
+### Key Generation (on client, as the user)
 
-Disable password login (force key-only):
+```bash
+su - user2
+ssh-keygen -t rsa
+# Keys saved to ~/.ssh/
+# id_rsa     → private key (NEVER share)
+# id_rsa.pub → public key (safe to copy)
+```
+
+Add a **passphrase** when prompted — protects the key file if stolen.
+
+---
+
+### Copy Public Key to Server
+
+```bash
+ssh-copy-id -p 22123 user2@172.16.121.131
+# Adds public key to ~/.ssh/authorized_keys on the server
+```
+
+---
+
+### Disable Password Login (force key-only)
+
+In `/etc/ssh/sshd_config` on the server:
+```
 PasswordAuthentication no
-in /etc/ssh/sshd_config
+```
 
-![disabled password login](image-8.png)
+Restart after:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart ssh.socket
+```
 
-![user 2 can ssh, but user 1 cannot anymore](image-9.png)
+Now only users with a valid key can log in — no password = no brute force possible.
 
-Why is the public key safe to copy/sniff?
+---
 
-The public key can only verify — it cannot be used to log in.
-Only the private key proves identity. Asymmetric crypto: what one key encrypts, only the other can decrypt.
+### Why the Public Key is Safe to Copy/Sniff
 
-Key Auth + Passphrase = 2FA
-FactorElementSomething you haveThe private key fileSomething you knowThe passphrase
-→ Stronger than password alone, and qualifies as true 2FA
+Asymmetric cryptography: what one key encrypts, only the other can decrypt.  
+The public key can only **verify** — it cannot be used to log in.  
+An attacker with the public key still needs the private key to authenticate.
 
-su and sudo after Remote Login
+---
 
-Remote root login disabled → attacker must compromise a normal user first
-Even then, sudo only works for users in /etc/sudoers
-To restrict su command itself:
+### Key Auth + Passphrase = True 2FA
 
-Change file permissions / ACL on /bin/su
+| Factor | Element |
+|---|---|
+| Something you **have** | The private key file |
+| Something you **know** | The passphrase |
 
+→ Key alone = 1 factor. Key + passphrase = **true 2FA**.
 
+---
 
+## sudo and su After Remote Login
 
-WHY better with passphrases than password?
-A password can be guessed, brute-forced, phished or reused
-A private key is 256-bit — ~10⁷⁵ possible combinations, practically impossible to brute force
-To steal a key an attacker needs physical access to the client machine
-Add a passphrase on top → now it's 2FA (something you have + something you know)
+- Root login disabled → attacker must compromise a normal user first
+- Even then, `sudo` only works for users listed in `/etc/sudoers`
+- To restrict the `su` command itself → change permissions/ACL on `/bin/su`
+
+---
+
+## Lab Config (our setup)
+
+| Setting | Value |
+|---|---|
+| Server IP | `172.16.121.131` |
+| SSH port | `22123` |
+| Root login | Disabled (`no`) |
+| Allowed group | `sshusers` (user1, user2) |
+| Key auth | user2 has RSA key |
+| Password auth | Disabled |
