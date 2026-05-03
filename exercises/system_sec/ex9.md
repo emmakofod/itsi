@@ -21,7 +21,7 @@ Exercise 9.2
 – Max 2 slides.
 
 
-
+[SLIDESHOW](https://docs.google.com/presentation/d/1ueCuiSSLBnnBD9VPxCIiaCV6o2axEE4oM0RPKMQWZhc/edit?usp=sharing)
 
 
 
@@ -35,3 +35,4 @@ Exercise 9.3
 – Configure the SSH Client.
 – Demonstrate SSH Client login to the SSH Server
 using Kerberos authentication.
+
