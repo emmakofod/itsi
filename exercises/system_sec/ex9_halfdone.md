@@ -29,7 +29,7 @@ Exercise 9.2
 Exercise 9.3
 • Research and prepare a Kerberos configuration.
 – Install a separate Kerberos Server (in VMware).
-– You already have SSH Server and Client machines.
+– Already have SSH Server and Client machines.
 – Configure the Kerberos Server.
 – Configure the SSH Server.
 – Configure the SSH Client.

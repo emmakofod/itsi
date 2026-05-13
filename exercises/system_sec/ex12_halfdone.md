@@ -1,11 +1,8 @@
 Opgaver 12:
 
+12.a sXID
+
 ![sxid setup shows that it works - if i add a file in the testdir, it detects the changes](image-37.png)
-
-
-
-
-
 
 
 _____
