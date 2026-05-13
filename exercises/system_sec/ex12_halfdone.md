@@ -8,14 +8,17 @@ Opgaver 12:
 _____
 
 
-12.b — Tripwire (ligner meget sXID — detekterer ændringer i filer):
+12.b Tripwire (ligner meget sXID — detekterer ændringer i filer):
 bashsudo apt install tripwire
 sudo tripwire --init
 # opret/ændr en fil i protected dir
 sudo tripwire --check
-12.c — PortSentry (detekterer og reagerer på nmap-scans):
+
+
+12.c PortSentry (detekterer og reagerer på nmap-scans):
 bashsudo apt install portsentry
 # edit /etc/portsentry/portsentry.conf
 # scan fra Kali med nmap, se hvad PortSentry opdager
+
+
 12.d — SquidProxy (proxy-filter på indhold og domæner).
-Vil du have en step-by-step guide til en af dem nu? Tripwire er hurtigst at lave — ca. 15 min.
