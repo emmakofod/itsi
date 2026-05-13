@@ -1,0 +1,69 @@
+Exercise 13 — Ransomware Handling Procedure
+
+Choose a procedure to handle ransomware. Research and select a procedure you like. Describe that procedure. Explain your choice.
+
+
+**Chosen procedure: NIST Incident Response + 3-2-1 Backup Strategy**
+
+Combine the NIST Cybersecurity Framework incident response steps with concrete 3-2-1 backup strategy => together cover all three defence steps: prevent, detect, and recover.
+
+## Phase 1 — Preparation (Prevent)
+
+- Keep all systems patched and up to date
+- Enforce least privilege
+- Segment the network -> ransomware spreading laterally hits -- targets
+- Train users to recognise phishing (the 1st entry point)
+- Deploy EDR (Endpoint Detection & Response) on all machines
+- Implement the 3-2-1 backup rule:
+
+    - 3 copies of data
+    - 2 different media types (e.g. disk + cloud)
+    - 1 copy completely offline / air-gapped
+
+
+## Phase 2 — Detection & Analysis (Detect)
+
+- Monitor logs for unusual file access patterns
+- Alert on processes accessing large numbers of files rapidly
+- Use IDS/SIEM to detect unusual network traffic
+- Early warning signs: CPU spike, file extensions changing, shadow copies being deleted
+
+## Phase 3 — Containment
+
+- Isolate affected machines immediately = disconnect from network
+- Do NOT shut down immediately (volatile memory may contain the encryption key)
+- Preserve forensic evidence -> take a memory dump if possible
+- Identify patient zero and the attack vector
+
+## Phase 4 — Eradication
+
+- Wipe affected systems completely => do not try to clean them
+- Rebuild from known-good images
+- Patch the vulnerability that was exploited
+
+## Phase 5 — Recovery
+
+- Restore data from the offline/air-gapped backup
+- Test the backup in a sandbox first to verify it is clean and not infected
+- Restore in order of business priority (critical servers first)
+- Monitor closely after restoration for signs of re-infection (persistence mechanisms)
+
+## Phase 6 — Post-Incident
+
+- Write an after-action report
+- Identify what failed and fix it
+- Update detection rules based on the attack
+
+
+**Why I chose this procedure**
+- The NIST approach is well-established and used by organisations globally
+    => it covers all three defence steps: prevent, detect, recover.
+
+- The most critical element is the offline backup. Network-connected backups are often encrypted by ransomware too.
+    => An air-gapped or immutable backup is the one thing that guarantees recovery without paying the ransom.
+
+- The NSG ex shows what happens when detection is slow: one month of undetected access cost $1.5M to recover from, even without paying the ransom.
+    => Fast detection + tested backups = the difference between a bad day and a catastrophe.
+
+- The procedure should complement other defences, not replace them    
+    =>just like host firewalls and gateway firewalls complement each other.

@@ -1,13 +1,6 @@
 # V2 Security København 2026 – 3 Udvalgte Emner
 
-> Baseret på artikler og emner fra V2 Security 2026, afholdt 6-7 maj i Bella Center, København.  
-> Danmarks største konference om cyber- og informationssikkerhed — 6.000 deltagere, 130 udstillere, 200 sessioner.
-
----
-
 ## 1. NATO var "blinde" ved kabelbrud i Østersøen
-
-**Kilde:** Version2 / V2 Security, 7. maj 2026  
 **Kategori:** Geopolitik & kritisk infrastruktur
 
 ### Hvad skete der?
@@ -22,11 +15,8 @@ I løbet af de seneste år er der sket en række mystiske kabelbrud på undervan
 ### Faglig pointe
 Sikkerhed handler ikke kun om software og netværk — fysisk beskyttelse af infrastruktur (kabler, datacentre, kraftværker) er en central del af det samlede sikkerhedsbillede.
 
----
 
 ## 2. Dansk kvantekryptering på vej mod udrulning i stor stil
-
-**Kilde:** Version2 / V2 Security, 19. april 2026  
 **Kategori:** Kryptering & emerging technologies
 
 ### Hvad handler det om?
@@ -40,11 +30,8 @@ Et dansk selskab (Celare Quantum Communications, med CTO Tobias Gehring og Quant
 ### Faglig pointe
 Post-quantum kryptografi og QKD er ikke fremtidsmusik — det er aktivt under udrulning. For it-sikkerhedsprofessionelle er det vigtigt at forstå, hvornår eksisterende krypteringsstandarter holder op med at være sikre.
 
----
 
-## 3. Fortrolig rapport gør Digitaliseringsstyrelsen til særligt hacker-mål
-
-**Kilde:** Ingeniøren undersøger / V2 Security-fokus, 14. april 2026  
+## 3. Fortrolig rapport gør Digitaliseringsstyrelsen til særligt hacker-mål  
 **Kategori:** Cyber threats & offentlig sektor
 
 ### Hvad skete der?
@@ -58,13 +45,3 @@ En fortrolig rapport afslørede kritiske sårbarheder i Digitaliseringsstyrelsen
 
 ### Faglig pointe
 Transparens og reel teknisk sikkerhedshygiejne er vigtigere end at holde sikkerhedsrapporter fortrolige. Problemerne (gamle systemer, svage passwords) er de samme, som undervisningen i System Security adresserer — bare i statslig skala.
-
----
-
-## Sammenfatning
-
-| Emne | Kategori | Kernebudskab |
-|---|---|---|
-| NATO & Østersøen-kabler | Geopolitik / hybrid warfare | Kritisk infrastruktur kræver realtidsovervågning |
-| Kvantekryptering | Kryptering / emerging tech | Post-quantum sikkerhed er under aktiv udrulning nu |
-| Digitaliseringsstyrelsen | Offentlig sektor / cyber threats | Legacy-systemer og dårlig hygiejne er en reel trussel |

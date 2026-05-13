@@ -245,3 +245,9 @@ We dont use bc is very heavy!!! so Dany made homemade vms with "bare minimum"
 ---
 
 ![summary table](image-58.png)
+
+
+
+
+
+http://172.16.121.140:5601/ elk siem
