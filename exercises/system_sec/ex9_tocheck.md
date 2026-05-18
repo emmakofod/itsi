@@ -27,12 +27,14 @@ Exercise 9.2
 
 
 Exercise 9.3
-• Research and prepare a Kerberos configuration.
-– Install a separate Kerberos Server (in VMware).
-– Already have SSH Server and Client machines.
-– Configure the Kerberos Server.
-– Configure the SSH Server.
-– Configure the SSH Client.
-– Demonstrate SSH Client login to the SSH Server
-using Kerberos authentication.
 
+Ubuntu server = kerberos KDC : 172.16.121.131
+UUbuntu desktop = ssh server : 172.16.121.130
+Kali = SSH client : 172.16.121.128
+
+![setup kadmin på ubuntu server](image-58.png)
+![exported key for](image-59.png)m server to desktop
+![actvate ekrber på desktop](image-60.png)
+
+![kerberos ticket på kali](image-61.png)
+![in the mainframe w/ kerberos ticket hehe](image-62.png)

@@ -1,39 +1,20 @@
 Exercise 14 Guide
 
 Exercise 14.a — Logcheck
-Step 1 — Install
-bashssh ekko@172.16.121.131
-sudo apt install logcheck
-Step 2 — Run manually
-bashsudo -u logcheck logcheck -o -t
-You'll see a report printed to the terminal. Read through it — it shows security events and system alerts.
-Step 3 — Explore the config
-bashsudo nano /etc/logcheck/logcheck.conf
-Look for and note:
+![installed og test](image-51.png)
+![added my alert humhum](image-53.png)
 
-REPORTLEVEL — change to server or paranoid and rerun, compare output
-SENDMAILTO — where reports go (we ignore email here)
-RULEDIR — where rule files live
+![addec cron hver 15 minu check](image-52.png)
 
-Step 4 — Add a custom rule that triggers on "user1" or "humhum"
-bashsudo nano /etc/logcheck/violations.d/local-custom
-Add this line:
-user1|humhum
-Save and exit.
-Step 5 — Generate a log entry that triggers the rule
-bashlogger "test: user1 logged in from suspicious IP"
-logger "test: humhum detected in request"
-Step 6 — Run logcheck again and verify it catches it
-bashsudo -u logcheck logcheck -o -t
-You should see your custom entries flagged in the output. ✅
-Step 7 — Change the cronjob to run every 15 minutes
-bashsudo nano /etc/cron.d/logcheck
-Find the line that looks like:
-@reboot logcheck ...
-0 * * * * logcheck ...
-Change 0 * * * * to */15 * * * *:
-*/15 * * * * logcheck /usr/sbin/logcheck
-Save and exit.
+
+
+
+
+
+
+
+
+
 
 Exercise 14.b — MultiTail (optional)
 bashsudo apt install multitail
