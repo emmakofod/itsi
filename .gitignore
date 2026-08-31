@@ -1,2 +1,4 @@
 *.pdf
 exercises/network_and_coms_sec/mandatory2/part3/netflow
+
+eth_hack/opgaver/*
