@@ -230,3 +230,18 @@ Padding with several repeated copies of the_shell's address instead of a single 
 eip stands for Extended Instruction Pointer — it's the CPU register that holds the address of the next instruction the processor is about to execute.
 
 Think of it as a bookmark: at every single moment while a program runs, eip points to exactly where in memory the CPU currently is, reading and running code one instruction at a time. After each instruction executes, eip automatically advances to the next one — unless something explicitly changes it, like a call, a jmp, or a ret.
+
+
+
+
+-- Added notes --
+
+Berstein w/Qmail.
+Bug bounty for it, nobody has found any bugs and claimed money off of it. He then wrote a book about the security, why it was so good - "Some thoughts about security qmail smthg smthg" : good paper to read
+
+Answer 1 : eliminiate bugs -> enforce expl data flow, simplilfy semantics, avoid parsing
+Answer2: eliminating ........[ADD NOTES HERE]
+
+Vuln analysis: vuln or securityt flaw, eploiting a vuln happens by an attacker, an exploit is a ...
+
+damn i fucked up the notes
