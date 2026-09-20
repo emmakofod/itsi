@@ -163,5 +163,5 @@ Steam achievement:
 - Waiting mode = start i en periode hvor jge ellers ikke ivlle havet noget [did it friday morning but cant remember wtf i did before the dentist apt..... i did something .. ]
 
 
-
+![alt text](image-5.png)
 ![i won](image-4.png)
