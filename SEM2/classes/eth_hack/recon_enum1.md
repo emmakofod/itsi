@@ -159,6 +159,9 @@ This is where we learn n important aspect of hacking…
 
 
 Steam achievement:
-- Timeboxed assignment = (max. 2 timer og så pause) stop selvom jeg ikke er færdig 
-- Waiting mode = start i en periode hvor jge ellers ikke ivlle havet noget
-- 
+- Timeboxed assignment = (max. 2 timer og så pause) stop selvom jeg ikke er færdig [as off 20/09 i did it kinda - hvade planlagt at stoppe 23:00 seneste og kl er 22:49 når jeg bliver færdig - startede 20:45]
+- Waiting mode = start i en periode hvor jge ellers ikke ivlle havet noget [did it friday morning but cant remember wtf i did before the dentist apt..... i did something .. ]
+
+
+
+![i won](image-4.png)
