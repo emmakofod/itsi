@@ -337,3 +337,30 @@ There must be a red thread, if something is misaligned, we need to adjust a poli
 
 
 OBS. se slides fra 27 af - opgaver + mandatory beskrivelser.
+
+
+
+Overlap ____
+
+## NIS2
+
+repetition:
+organizational controls, people controls, phys controls, tech controls
+
+hvad er nis2?
+it defines the responsibility, defines rules and law reveiws of the impelmentastion
+
+001 is not specific oon cybersecurity reqs
+nis2 is by the 10 essentials reqs +++ sepcific about cybersec implementatiosn
+
+eu infraxrtcuture under attacj from hostile countires, being spied on
+
+kristisk infrastrucur -> husk inclkludere supplychain
+
+how to implement nis2 directive?
+21.2.a --> 21.2.j
+
+revision? digst + cfcs
+
+supplychain i sbest pplace to make attack 
+
