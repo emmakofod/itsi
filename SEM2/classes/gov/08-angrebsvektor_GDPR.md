@@ -178,3 +178,8 @@ som gruppe
 https://gdpr.dk/persondataforordningen/de-7-principper/
 
 Vi står for nr 11
+
+
+
+Vide 7 principper og 8 rettigheder til eksamen - give roverblik på hele gdpr nogenlunde - ret vigtigt!
+
